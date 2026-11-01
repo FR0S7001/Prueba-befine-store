@@ -1,0 +1,37 @@
+name: Solicitud de cambio (SC-XX)
+description: Registro de un control de cambios según el Plan 11
+title: "SC-XX · "
+labels: ["tipo:cambio"]
+body:
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción y causa del cambio
+    validations:
+      required: true
+  - type: textarea
+    id: impacto
+    attributes:
+      label: Impacto en la línea base
+      value: |
+        - Alcance:
+        - Cronograma (18 semanas, Go-Live 21-nov):
+        - Costo:
+        - Calidad:
+    validations:
+      required: true
+  - type: textarea
+    id: compensacion
+    attributes:
+      label: Qué se retira o posterga del backlog (si amplía el alcance)
+  - type: dropdown
+    id: decision
+    attributes:
+      label: Decisión del comité
+      options:
+        - "Pendiente"
+        - "Aprobado"
+        - "Rechazado"
+        - "Diferido"
+    validations:
+      required: true

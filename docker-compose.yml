@@ -1,0 +1,13 @@
+# Befine Store (modo local):  docker compose up --build   →   http://localhost:8080
+services:
+  web:
+    build: .
+    image: befine-store:local
+    container_name: befine-store
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    volumes:
+      - befine-data:/app/data      # base de datos y banners subidos (se conservan al reiniciar)
+    restart: unless-stopped
+volumes:
+  befine-data:

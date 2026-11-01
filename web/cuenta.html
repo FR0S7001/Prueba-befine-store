@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mi cuenta · Befine Store</title>
+  <meta name="description" content="Ingresa o crea tu cuenta Befine para comprar más rápido, acumular puntos y seguir tus pedidos.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/shell.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/cuenta.css">
+</head>
+<body class="page-cuenta">
+<script>try{document.body.classList.toggle('tema-claro',(localStorage.getItem('befine_tema')||'claro')==='claro');}catch(e){document.body.classList.add('tema-claro');}</script>
+
+<canvas id="water" aria-hidden="true"></canvas>
+<div class="bg-veil"></div>
+<div class="depth" id="depth" aria-hidden="true"></div>
+<div class="bubbles" id="bubbles" aria-hidden="true"></div>
+<div class="cur-ring" id="curRing" aria-hidden="true"></div>
+<div class="cur-dot" id="curDot" aria-hidden="true"></div>
+
+<div id="app-header"></div>
+
+<div class="app">
+  <div class="wrap">
+
+    <!-- ============ INGRESAR / CREAR CUENTA ============ -->
+    <section class="acc" id="vAuth" hidden>
+      <!-- Panel de marca con beneficios (solo PC) -->
+      <div class="acc-brand">
+        <span class="kick">Befine · Mi cuenta</span>
+        <h1>Tu agua, <span class="serif">sin esperas</span></h1>
+        <ul class="ben">
+          <li><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></i><div><b>Compra en segundos</b><span>Tus datos y dirección quedan listos para la próxima vez.</span></div></li>
+          <li><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></i><div><b>Acumula puntos</b><span>Canjéalos por recargas y descuentos.</span></div></li>
+          <li><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></i><div><b>Sigue tus pedidos</b><span>Estado, fecha de entrega y boletas en un solo lugar.</span></div></li>
+        </ul>
+        <p class="invitado">¿Solo quieres comprar? <a href="catalogo.html">No necesitas cuenta →</a></p>
+      </div>
+
+      <div class="sheet acc-card">
+        <!-- Pestañas -->
+        <div class="seg2 tabs" role="tablist" aria-label="Ingresar o crear cuenta" id="accTabs">
+          <button type="button" role="tab" id="tabIn" aria-selected="true" aria-controls="fIngresar">Ingresar</button>
+          <button type="button" role="tab" id="tabReg" aria-selected="false" aria-controls="fRegistro">Crear cuenta</button>
+        </div>
+
+        <div class="acc-google">
+          <button type="button" class="btn-google" data-google>Continuar con Google</button>
+          <div class="divider">o con tu correo</div>
+        </div>
+
+        <!-- Ingresar -->
+        <form id="fIngresar" class="acc-form" role="tabpanel" aria-labelledby="tabIn" novalidate>
+          <div class="fld"><label for="inEmail">Correo</label><input class="inp" id="inEmail" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.cl" required></div>
+          <div class="fld"><label for="inClave">Contraseña</label>
+            <div class="inp-wrap"><input class="inp" id="inClave" type="password" autocomplete="current-password" placeholder="Tu contraseña" required>
+              <button type="button" class="eye" data-ver-clave="inClave" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+          <div class="acc-row"><a href="#" class="lnk" data-ir="recuperar">¿Olvidaste tu contraseña?</a></div>
+          <div class="aviso mal" id="inMsg" hidden></div>
+          <button class="btn btn-primary btn-lg btn-block" id="inBtn">Ingresar</button>
+        </form>
+
+        <!-- Crear cuenta -->
+        <form id="fRegistro" class="acc-form" role="tabpanel" aria-labelledby="tabReg" novalidate hidden>
+          <div class="fld"><label for="regNombre">Nombre y apellido</label><input class="inp" id="regNombre" autocomplete="name" placeholder="Ej: Camila Fuentes" required maxlength="80"></div>
+          <div class="fld"><label for="regEmail">Correo</label><input class="inp" id="regEmail" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.cl" required></div>
+          <div class="fld"><label for="regTel">Celular <span class="opt">(opcional, para avisos de entrega)</span></label>
+            <div class="inp-wrap"><span class="pre">+56</span><input class="inp" id="regTel" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="9 1234 5678"></div></div>
+          <div class="fld"><label for="regClave">Contraseña</label>
+            <div class="inp-wrap"><input class="inp" id="regClave" type="password" autocomplete="new-password" placeholder="Mín. 8: mayúscula, número y símbolo" required minlength="8">
+              <button type="button" class="eye" data-ver-clave="regClave" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+            <div class="fuerza" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <ul class="reqs" id="regReqs" aria-live="polite"></ul></div>
+          <label class="check"><input type="checkbox" id="regAcepto" required><span>Acepto los <a href="#">Términos</a> y la <a href="#">Política de privacidad</a> (Ley 21.719).</span></label>
+          <label class="check"><input type="checkbox" id="regNovedades"><span>Quiero recibir ofertas y recordatorios de recarga (opcional).</span></label>
+          <div class="aviso mal" id="regMsg" hidden></div>
+          <button class="btn btn-primary btn-lg btn-block" id="regBtn">Crear cuenta</button>
+        </form>
+
+        <!-- Recuperar contraseña -->
+        <form id="fRecuperar" class="acc-form" novalidate hidden>
+          <h2 class="acc-t">Recupera tu contraseña</h2>
+          <p class="hint">Te enviaremos un enlace para crear una nueva.</p>
+          <div class="fld"><label for="recEmail">Correo</label><input class="inp" id="recEmail" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.cl" required></div>
+          <div class="aviso" id="recMsg" hidden></div>
+          <button class="btn btn-primary btn-lg btn-block" id="recBtn">Enviar enlace</button>
+          <div class="acc-row center"><a href="#" class="lnk" data-ir="ingresar">← Volver a ingresar</a></div>
+        </form>
+
+        <!-- Nueva contraseña (llega desde el correo) -->
+        <form id="fNueva" class="acc-form" novalidate hidden>
+          <h2 class="acc-t">Crea tu nueva contraseña</h2>
+          <div class="fld"><label for="nvClave">Nueva contraseña</label>
+            <div class="inp-wrap"><input class="inp" id="nvClave" type="password" autocomplete="new-password" placeholder="Mín. 8: mayúscula, número y símbolo" required minlength="8">
+              <button type="button" class="eye" data-ver-clave="nvClave" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+            <ul class="reqs" id="nvReqs" aria-live="polite"></ul></div>
+          <div class="aviso" id="nvMsg" hidden></div>
+          <button class="btn btn-primary btn-lg btn-block" id="nvBtn">Guardar contraseña</button>
+        </form>
+
+        <!-- Revisa tu correo -->
+        <div id="vRevisa" class="acc-form center" hidden>
+          <svg class="okmark" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
+          <h2 class="acc-t">Revisa tu correo</h2>
+          <p class="hint" id="revisaTxt">Te enviamos un enlace para activar tu cuenta.</p>
+          <a class="btn btn-ghost" href="catalogo.html" style="margin-top:14px">Ir a comprar</a>
+        </div>
+      </div>
+      <p class="invitado solo-movil">¿Solo quieres comprar? <a href="catalogo.html">No necesitas cuenta →</a></p>
+    </section>
+
+    <!-- ============ PANEL DEL CLIENTE ============ -->
+    <section class="panel-c" id="vPanel" hidden>
+      <div class="pc-head">
+        <div class="avatar" id="pcAvatar">B</div>
+        <div><span class="kick">Mi cuenta</span><h1 id="pcHola">Hola</h1><p class="muted" id="pcEmail"></p></div>
+        <a class="btn btn-primary pc-admin" id="pcAdmin" href="admin.html" hidden>Panel de administración</a>
+        <button class="btn btn-ghost" id="pcSalir">Cerrar sesión</button>
+      </div>
+      <div class="pc-grid">
+        <div class="sheet pc-puntos">
+          <span class="lbl">Tus puntos</span>
+          <b id="pcPuntos">0</b>
+          <p class="hint">Ganas puntos con cada compra y los canjeas por recargas. <span class="pronto">Próximamente</span></p>
+          <a class="btn btn-primary btn-block" href="catalogo.html">Comprar ahora</a>
+        </div>
+        <div class="sheet pc-datos">
+          <h2>Mis datos</h2>
+          <dl id="pcDatos"></dl>
+        </div>
+        <div class="sheet pc-pedidos">
+          <h2>Mis pedidos</h2>
+          <div id="pcPedidos"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cargando sesión -->
+    <div class="acc-cargando" id="vCarga" aria-live="polite"><span class="spin"></span> Cargando…</div>
+  </div>
+
+  <div id="app-footer"></div>
+</div>
+
+<button class="sound-btn" id="soundBtn" aria-label="Silenciar"></button>
+
+<script src="js/local-client.js"></script>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/transitions.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/water.js"></script>
+<script src="js/bands.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/perf.js"></script>
+<script src="js/forms.js"></script>
+<script src="js/cuenta.js"></script>
+</body>
+</html>

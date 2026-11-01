@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Finalizar compra · Befine Store</title>
+  <meta name="description" content="Finaliza tu pedido de agua purificada a domicilio en menos de un minuto. Pago seguro con Mercado Pago.">
+  <meta name="robots" content="noindex">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/shell.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body class="page-checkout">
+<script>try{document.body.classList.toggle('tema-claro',(localStorage.getItem('befine_tema')||'claro')==='claro');}catch(e){document.body.classList.add('tema-claro');}</script>
+
+<canvas id="water" aria-hidden="true"></canvas>
+<div class="bg-veil"></div>
+<div class="depth" id="depth" aria-hidden="true"></div>
+<div class="bubbles" id="bubbles" aria-hidden="true"></div>
+<div class="cur-ring" id="curRing" aria-hidden="true"></div>
+<div class="cur-dot" id="curDot" aria-hidden="true"></div>
+
+<div id="app-header"></div>
+
+<div class="app">
+  <div class="wrap">
+
+    <!-- Encabezado + señales de confianza -->
+    <section class="co-head">
+      <a class="volver" href="catalogo.html">← Seguir comprando</a>
+      <h1>Finalizar compra</h1>
+      <ul class="trust" aria-label="Garantías de compra">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Pago seguro con Mercado Pago</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Boleta o factura electrónica</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Entrega en 24 h hábiles</li>
+      </ul>
+    </section>
+
+    <!-- Carrito vacío -->
+    <section class="sheet co-vacio" id="coVacio" hidden>
+      <h2>Tu carrito está vacío</h2>
+      <p class="muted">Agrega tus recargas o productos y vuelve aquí para pagar en segundos.</p>
+      <a class="btn btn-primary btn-lg" href="catalogo.html">Ver productos</a>
+    </section>
+
+    <!-- FORMULARIO: 3 pasos en una sola página (sin recargas) -->
+    <form class="co-grid" id="coForm" novalidate hidden>
+      <div class="co-main">
+
+        <!-- Sesión: invitado o cliente registrado -->
+        <div class="co-sesion" id="coSesion"></div>
+
+        <!-- 1 · Contacto -->
+        <section class="sheet" aria-labelledby="hContacto">
+          <div class="sheet-h"><span class="n">1</span><h2 id="hContacto">Tus datos</h2></div>
+          <div class="fgrid">
+            <div class="fld c6">
+              <label for="coNombre">Nombre y apellido</label>
+              <input class="inp" id="coNombre" name="nombre" autocomplete="name" placeholder="Ej: Camila Fuentes" required maxlength="80">
+            </div>
+            <div class="fld c3">
+              <label for="coTel">Celular (WhatsApp)</label>
+              <div class="inp-wrap"><span class="pre">+56</span><input class="inp" id="coTel" name="telefono" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="9 1234 5678" required></div>
+            </div>
+            <div class="fld c3">
+              <label for="coEmail">Correo</label>
+              <input class="inp" id="coEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.cl" required>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:10px">Te enviamos la boleta y el aviso de entrega. Nada de spam.</p>
+        </section>
+
+        <!-- 2 · Entrega -->
+        <section class="sheet" aria-labelledby="hEntrega">
+          <div class="sheet-h"><span class="n">2</span><h2 id="hEntrega">Entrega</h2></div>
+          <div class="fgrid">
+            <div class="fld c6">
+              <label for="coComuna">Comuna</label>
+              <select class="inp" id="coComuna" name="comuna" autocomplete="address-level2" required>
+                <option value="">Elige tu comuna…</option>
+              </select>
+              <p class="hint" id="coComunaHint"></p>
+            </div>
+            <div class="fld c4">
+              <label for="coCalle">Calle</label>
+              <input class="inp" id="coCalle" name="calle" autocomplete="address-line1" placeholder="Ej: Los Tailandeses" required maxlength="120">
+            </div>
+            <div class="fld c2">
+              <label for="coNumero">Número</label>
+              <input class="inp" id="coNumero" name="numero" inputmode="numeric" placeholder="1156" required maxlength="10">
+            </div>
+            <div class="fld c3">
+              <label for="coDepto">Depto / casa <span class="opt">(opcional)</span></label>
+              <input class="inp" id="coDepto" name="depto" autocomplete="address-line2" placeholder="Depto 402, torre B" maxlength="40">
+            </div>
+            <div class="fld c3">
+              <label for="coRef">Referencia <span class="opt">(opcional)</span></label>
+              <input class="inp" id="coRef" name="referencia" placeholder="Portón negro, timbre 2" maxlength="120">
+            </div>
+          </div>
+
+          <div class="fld" style="margin-top:18px">
+            <label>¿Cuándo lo recibes?</label>
+            <div class="opts2" role="radiogroup" aria-label="Tipo de entrega">
+              <label class="ocard"><input type="radio" name="entrega" value="estandar" checked><span class="dot"></span>
+                <span><b>Lo antes posible</b><small id="coFechaStd">—</small></span></label>
+              <label class="ocard"><input type="radio" name="entrega" value="agendada"><span class="dot"></span>
+                <span><b>Agendar un día</b><small>Elige el día que prefieras (lunes a viernes)</small></span></label>
+            </div>
+            <div class="dias" id="coDias" role="group" aria-label="Días disponibles" hidden></div>
+          </div>
+        </section>
+
+        <!-- 3 · Documento y pago -->
+        <section class="sheet" aria-labelledby="hPago">
+          <div class="sheet-h"><span class="n">3</span><h2 id="hPago">Documento y pago</h2></div>
+          <div class="seg2" role="tablist" aria-label="Tipo de documento">
+            <button type="button" role="tab" aria-selected="true" data-doc="boleta">Boleta</button>
+            <button type="button" role="tab" aria-selected="false" data-doc="factura">Factura</button>
+          </div>
+          <div class="fgrid despliega" id="coFactura" hidden style="margin-top:14px">
+            <div class="fld c3"><label for="coRut">RUT empresa</label><input class="inp" id="coRut" name="rut" inputmode="text" placeholder="76.123.456-7" maxlength="12"></div>
+            <div class="fld c3"><label for="coRazon">Razón social</label><input class="inp" id="coRazon" name="razon_social" autocomplete="organization" placeholder="Empresa SpA" maxlength="120"></div>
+            <div class="fld c6"><label for="coGiro">Giro</label><input class="inp" id="coGiro" name="giro" placeholder="Ej: Servicios de oficina" maxlength="120"></div>
+          </div>
+
+          <div class="fld" style="margin-top:18px">
+            <label>Medio de pago</label>
+            <label class="ocard pago"><input type="radio" name="pago" value="mercado_pago" checked><span class="dot"></span>
+              <span><b>Mercado Pago</b><small>Tarjetas de débito, crédito y prepago. Pagas en el sitio seguro de Mercado Pago.</small></span>
+              <span class="tarjetas" aria-hidden="true"><i></i><i></i><i></i></span></label>
+          </div>
+          <label class="switch" style="margin-top:16px"><input type="checkbox" id="coRecordar" checked><span class="sw"></span>Recordar mis datos en este dispositivo para la próxima compra</label>
+        </section>
+      </div>
+
+      <!-- RESUMEN (fijo al costado en PC) -->
+      <aside class="co-side">
+        <div class="sheet resumen" id="coResumen" aria-live="polite">
+          <h2>Tu pedido</h2>
+          <div class="r-items" id="coItems"></div>
+          <div class="r-envio" id="coEnvioMeta" hidden><div class="barra"><span id="coEnvioBar"></span></div><p id="coEnvioTxt"></p></div>
+          <div class="r-cupon" id="coCupon">
+            <button type="button" class="r-cupon-abrir" id="coCuponAbrir" aria-expanded="false">¿Tienes un cupón de descuento?</button>
+            <div class="r-cupon-form" id="coCuponForm" hidden>
+              <input class="inp" id="coCuponInp" placeholder="Código del cupón" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" aria-label="Código del cupón">
+              <button type="button" class="btn btn-ghost" id="coCuponBtn">Aplicar</button>
+            </div>
+            <p class="r-cupon-msg" id="coCuponMsg" role="status" hidden></p>
+            <div class="r-cupon-ok" id="coCuponOk" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Cupón <b id="coCuponCod"></b> aplicado</span>
+              <button type="button" id="coCuponQuitar">Quitar</button>
+            </div>
+          </div>
+          <dl class="r-tot">
+            <div><dt>Subtotal</dt><dd id="coSub">$0</dd></div>
+            <div id="coDescFila" hidden><dt>Descuento</dt><dd id="coDesc" class="gratis">−$0</dd></div>
+            <div><dt>Despacho</dt><dd id="coEnvio">Elige tu comuna</dd></div>
+            <div class="total"><dt>Total</dt><dd id="coTotal">$0</dd></div>
+          </dl>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="coPagar">Pagar</button>
+          <p class="legal">Al pagar aceptas los <a href="#">Términos y condiciones</a> y la <a href="#">Política de privacidad</a> (Ley 21.719). Tus datos se usan solo para tu pedido.</p>
+        </div>
+      </aside>
+    </form>
+
+    <!-- CONFIRMACIÓN -->
+    <section class="co-ok" id="coOk" hidden aria-live="polite"></section>
+  </div>
+
+  <div id="app-footer"></div>
+</div>
+
+<!-- Barra fija en celular: total + pagar siempre a la vista -->
+<div class="co-bar" id="coBar" hidden>
+  <div><small>Total</small><b id="coBarTotal">$0</b></div>
+  <button type="submit" form="coForm" class="btn btn-primary btn-lg" id="coBarPagar">Pagar</button>
+</div>
+
+<button class="sound-btn" id="soundBtn" aria-label="Silenciar"></button>
+
+<script src="js/local-client.js"></script>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/transitions.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/water.js"></script>
+<script src="js/bands.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/perf.js"></script>
+<script src="js/forms.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>

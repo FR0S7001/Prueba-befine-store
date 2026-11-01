@@ -1,0 +1,420 @@
+/* =====================================================================
+   shell.css — "Cascarón" compartido por todas las páginas
+   Incluye: fondo de agua, barra superior, navegación, cajón (drawer) del
+   carrito y pie de página. Estos elementos son iguales en todo el sitio.
+   ===================================================================== */
+
+/* ---------- Fondo de agua (canvas a pantalla completa) ---------- */
+/* El <canvas id="water"> se dibuja detrás de todo. Ver js/water.js.  */
+#water {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  z-index: var(--z-water); display: block; pointer-events: none;
+}
+.bg-veil {
+  position: fixed; inset: 0; z-index: var(--z-veil); pointer-events: none;
+  background: radial-gradient(130% 100% at 50% -10%, rgba(0,0,0,0) 45%, rgba(2,9,24,.6) 100%);
+}
+
+/* Todo el contenido va por encima del agua */
+.app { position: relative; z-index: var(--z-app); }
+
+/* ---------- Barra superior ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: var(--z-topbar);
+  backdrop-filter: blur(16px) saturate(1.2);
+  background: linear-gradient(180deg, rgba(8,30,66,.96), rgba(8,30,66,.88));
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 6px 22px -14px rgba(0,0,0,.8);
+  transition: transform .22s ease;   /* rápida, para que reaparezca casi al instante */
+}
+/* Al bajar se esconde hacia arriba; al subir vuelve (lo controla fx.js) */
+.topbar.nav-hidden { transform: translateY(-100%); }
+.topbar .row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 0;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -.02em;
+  font-size: 20px; color: var(--ink);
+}
+.brand .drop {
+  width: 20px; height: 20px; border-radius: 50% 50% 50% 4px; transform: rotate(45deg);
+  background: linear-gradient(150deg, var(--accent-soft), var(--accent));
+  box-shadow: 0 0 16px var(--accent);
+}
+.brand img { height: 64px; width: auto; display: block; }
+.nav { display: flex; gap: 18px; margin-left: 8px; }
+.nav a { color: var(--ink); font-weight: 600; font-size: 15px; transition: color .2s; }
+.nav a:hover, .nav a[aria-current="page"] { color: var(--accent-soft); }
+
+/* ---------- Submenú del Catálogo (desplegable) ---------- */
+.nav { align-items: center; }
+.nav-item { position: relative; display: flex; align-items: center; gap: 2px; }
+.sub-toggle { display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer; border-radius: 6px; }
+.sub-toggle svg { width: 14px; height: 14px; transition: transform .2s ease; }
+.has-sub:hover .sub-toggle, .has-sub.open .sub-toggle { color: var(--accent-soft); }
+.has-sub:hover .sub-toggle svg, .has-sub.open .sub-toggle svg { transform: rotate(180deg); }
+.submenu { position: absolute; top: 100%; left: -14px; z-index: 30; min-width: 260px; margin-top: 14px; padding: 8px;
+  background: rgba(6,20,48,.97); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 24px 50px -20px rgba(0,0,0,.8);
+  opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .18s ease, transform .18s ease, visibility .18s; }
+.submenu::before { content: ""; position: absolute; left: 0; right: 0; top: -16px; height: 16px; } /* puente para no perder el hover */
+.has-sub:hover .submenu, .has-sub:has(:focus-visible) .submenu, .has-sub.open .submenu { opacity: 1; visibility: visible; transform: none; }
+.has-sub.closed .submenu { opacity: 0; visibility: hidden; transform: translateY(6px); } /* cerrado con la flecha: gana sobre hover/foco */
+.has-sub.closed .sub-toggle svg { transform: none; }
+.topbar.nav-hidden .submenu { opacity: 0 !important; visibility: hidden !important; } /* si la barra se esconde, el submenú también */
+.nav .submenu a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px;
+  font-size: 13.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+.nav .submenu a:hover, .nav .submenu a[aria-current] { background: rgba(142,197,255,.12); color: var(--accent-soft); }
+.submenu .si { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; border-radius: 8px;
+  background: rgba(142,197,255,.14); color: var(--accent-soft); }
+.submenu .si svg { width: 17px; height: 17px; }
+body.tema-claro .submenu { background: rgba(255,255,255,.98); box-shadow: 0 24px 50px -24px rgba(11,52,110,.45); }
+body.tema-claro .submenu .si { background: rgba(11,127,212,.10); color: var(--accent); }
+body.tema-claro .nav .submenu a:hover, body.tema-claro .nav .submenu a[aria-current] { background: rgba(11,127,212,.08); color: var(--accent); }
+body.tema-claro .sub-toggle { color: var(--ink); }
+body.tema-claro .has-sub:hover .sub-toggle, body.tema-claro .has-sub.open .sub-toggle { color: var(--accent); }
+
+/* Celular: el menú es una lista; "Catálogo" tiene una flecha que despliega las categorías debajo */
+@media (max-width: 720px) {
+  .nav { min-width: 260px; gap: 0 !important; align-items: stretch; z-index: 40;
+    background: rgba(6,20,48,.98) !important; backdrop-filter: blur(14px); box-shadow: 0 24px 50px -20px rgba(0,0,0,.8); }
+  body.tema-claro .nav { background: rgba(255,255,255,.98) !important; box-shadow: 0 24px 50px -24px rgba(11,52,110,.45); }
+  .nav > a, .nav-item { width: 100%; border-bottom: 1px solid var(--line-soft); }
+  .nav > a:last-child { border-bottom: 0; }
+  .nav > a, .nav-item > a { display: block; padding: 12px 4px; }
+  .nav-item { flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
+  .nav-item > a { flex: 0 0 auto; }
+  .sub-toggle { width: 32px; height: 32px; border-radius: 8px; }
+  .has-sub.open .sub-toggle { background: var(--accent); color: #fff !important; }
+  .submenu { position: static; width: 100%; min-width: 0; margin: 0 0 8px; padding: 2px 0; background: none; border: 0; box-shadow: none;
+    opacity: 1; visibility: visible; transform: none; display: none; }
+  .submenu::before { display: none; }
+  .has-sub.open .submenu { display: block; }
+  body.tema-claro .submenu { background: none; box-shadow: none; }
+  .nav .submenu a { font-size: 13px; padding: 10px 8px; }
+}
+
+.topbar .spacer { flex: 1; }
+
+/* Buscador */
+.search {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(4,16,40,.6); border: 1px solid var(--line);
+  border-radius: 999px; padding: 8px 14px; min-width: 180px;
+}
+.search input {
+  border: none; background: transparent; color: var(--ink);
+  font: inherit; font-size: 14px; outline: none; width: 100%;
+}
+.search svg { width: 16px; height: 16px; color: var(--muted); flex: 0 0 auto; }
+
+/* Botón del carrito con contador */
+.cart-btn {
+  position: relative; width: 42px; height: 42px; border-radius: 50%;
+  border: 1px solid var(--line); background: rgba(6,26,60,.5);
+  color: var(--accent-soft); display: grid; place-items: center; cursor: pointer;
+  transition: transform .15s;
+}
+.cart-btn:hover { transform: translateY(-2px); }
+.cart-btn svg { width: 20px; height: 20px; }
+.cart-count {
+  position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px;
+  padding: 0 5px; border-radius: 999px; background: var(--accent); color: #04183A;
+  font-size: 11px; font-weight: 800; display: grid; place-items: center;
+}
+
+/* Botón "Mi cuenta" (junto al carrito) */
+.acct-btn { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: rgba(6,26,60,.5);
+  color: var(--accent-soft); display: grid; place-items: center; transition: transform .15s; flex: 0 0 auto; }
+.acct-btn:hover { transform: translateY(-2px); }
+.acct-btn svg { width: 20px; height: 20px; }
+.acct-btn.logged svg { display: none; }
+.acct-btn .acct-ini { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 15px; color: #fff;
+  background: linear-gradient(140deg, var(--accent-soft), var(--accent)); }
+.acct-btn .acct-ini[hidden] { display: none; }
+body.tema-claro .acct-btn { background: #fff; color: var(--accent); }
+.nav .nav-cuenta { display: none; }
+@media (max-width: 720px) { .acct-btn { display: none; } .nav .nav-cuenta { display: block; } }
+
+/* Menú hamburguesa (solo móvil) */
+.menu-btn { display: none; width: 42px; height: 42px; border-radius: 12px;
+  border: 1px solid var(--line); background: rgba(6,26,60,.5); color: var(--ink); cursor: pointer; }
+
+@media (max-width: 720px) {
+  .nav { display: none; }
+  .search { min-width: 0; width: 40px; padding: 8px; }
+  .search input { display: none; }
+  .menu-btn { display: grid; place-items: center; }
+}
+
+/* ---------- Cajón del carrito (drawer lateral) ---------- */
+.drawer-backdrop {
+  position: fixed; inset: 0; z-index: var(--z-drawer);
+  background: rgba(3,10,26,.55); backdrop-filter: blur(3px);
+  opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
+}
+.drawer-backdrop.open { opacity: 1; visibility: visible; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: calc(var(--z-drawer) + 1);
+  width: min(400px, 90vw); background: var(--glass-2); backdrop-filter: blur(16px);
+  border-left: 1px solid var(--line); box-shadow: var(--shadow);
+  transform: translateX(100%); transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  display: flex; flex-direction: column;
+}
+.drawer.open { transform: none; }
+.drawer header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; border-bottom: 1px solid var(--line-soft);
+}
+.drawer header h3 { font-family: var(--font-display); font-weight: 800; margin: 0; font-size: 20px; }
+.drawer .close { background: none; border: none; color: var(--muted); font-size: 24px; cursor: pointer; line-height: 1; }
+.drawer .items { flex: 1; overflow-y: auto; padding: 12px 20px; }
+.drawer .empty { color: var(--muted); text-align: center; margin-top: 40px; }
+.drawer footer { padding: 18px 20px; border-top: 1px solid var(--line-soft); }
+.drawer .total-row { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 12px; }
+.drawer .total-row .big { font-size: 20px; font-family: var(--font-display); }
+
+/* Línea de item dentro del carrito */
+.cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+.cart-item .thumb { width: 54px; height: 54px; border-radius: 12px; flex: 0 0 auto; }
+.cart-item .info { flex: 1; min-width: 0; }
+.cart-item .info h4 { margin: 0; font-size: 14px; font-weight: 700; }
+.cart-item .info .var { color: var(--muted); font-size: 12px; }
+.cart-item .info .price { color: var(--accent-soft); font-weight: 700; font-size: 14px; margin-top: 2px; }
+.cart-item .remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; text-decoration: underline; }
+
+/* ---------- Pie de página ---------- */
+footer.site {
+  position: relative; z-index: var(--z-app);
+  border-top: 1px solid var(--line-soft); margin-top: 40px;
+  padding-block: 28px; color: var(--muted); font-size: 14px;
+  background: linear-gradient(180deg, transparent, rgba(4,18,24,.5));
+}
+footer.site .cols { display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; }
+footer.site h5 { color: var(--ink); font-family: var(--font-display); margin: 0 0 10px; font-size: 15px; }
+footer.site a { display: block; color: var(--muted); padding: 3px 0; }
+footer.site a:hover { color: var(--accent-soft); }
+footer.site .legal { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line-soft); font-size: 12px; opacity: .8; }
+
+/* Previsualizar horario (demo) — vive en el footer compartido */
+.demo-bands { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 22px 0 4px; }
+.demo-bands .lbl { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.seg button { font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--ink); transition: transform .15s ease; }
+.seg button:hover { transform: translateY(-1px); }
+.seg button.active { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+
+/* ---------- Efectos compartidos (burbujas / profundidad / cursor / sonido) ----------
+   Antes vivían solo en home.css; ahora están aquí para usarse también en
+   catálogo y ficha (js/fx.js los activa si el elemento existe). */
+.depth { position: fixed; inset: 0; z-index: var(--z-veil); pointer-events: none; background: linear-gradient(180deg, rgba(3,16,40,.15), rgba(1,7,20,.98)); opacity: 0; }
+.bubbles { position: fixed; inset: 0; z-index: var(--z-veil); pointer-events: none; overflow: hidden; }
+.bubbles i { position: absolute; bottom: -8vh; border-radius: 50%; opacity: 0; animation: rise linear infinite; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(224,236,255,.08) 60%, transparent 70%); }
+@keyframes rise { 0% { transform: translateY(0) scale(.9); opacity: 0; } 10% { opacity: .5; } 90% { opacity: .35; } 100% { transform: translateY(-118vh) scale(1.1); opacity: 0; } }
+.cur-dot, .cur-ring { position: fixed; top: 0; left: 0; z-index: var(--z-cursor); pointer-events: none; border-radius: 50%; transform: translate(-50%,-50%); mix-blend-mode: screen; }
+.cur-dot { width: 7px; height: 7px; background: var(--accent-soft); }
+.cur-ring { width: 34px; height: 34px; border: 1.5px solid var(--accent-soft); opacity: .7; transition: width .18s ease, height .18s ease, opacity .18s ease, background .18s ease; }
+.cur-ring.big { width: 58px; height: 58px; opacity: 1; background: rgba(142,197,255,.12); }
+@media (hover:none),(pointer:coarse) { .cur-dot, .cur-ring { display: none; } }
+.sound-btn { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom,0px)); z-index: 40; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: rgba(10,40,92,.6); backdrop-filter: blur(8px); color: var(--accent-soft); display: grid; place-items: center; cursor: pointer; transition: transform .15s ease; }
+.sound-btn:hover { transform: translateY(-2px); }
+.sound-btn svg { width: 20px; height: 20px; }
+@media (prefers-reduced-motion: reduce) { .bubbles, .cur-dot, .cur-ring { display: none; } }
+
+
+/* ===================================================================
+   Refinamientos: marca de agua del logo, logo móvil, buscador móvil
+   =================================================================== */
+
+/* Marca de agua del logo, muy sutil, detrás de todo el contenido */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: var(--z-veil); pointer-events: none;
+  background: url("../assets/logo-befine.png") no-repeat center 40% / min(600px, 80vw);
+  opacity: .1; mix-blend-mode: screen; transition: opacity .5s ease;
+}
+body.fx-off::before { opacity: 0; }
+
+/* Animación apagada: aplica en TODAS las páginas (antes solo en el inicio) */
+body.fx-off #water, body.fx-off .bubbles { opacity: 0; transition: opacity .4s ease; }
+body.fx-off .cur-dot, body.fx-off .cur-ring { display: none; }
+
+/* Sin animaciones: fondo claro y limpio en TODAS las páginas (igual al inicio).
+   Al apagar el agua se ve el color base; forzamos el claro y quitamos las
+   fotos de fondo para que el catálogo quede tan blanco como el inicio. */
+body.tema-claro.fx-off { background: var(--bg); }
+body.fx-off .scenes-bg { display: none; }
+
+@media (max-width: 720px) {
+  /* Logo ~25% más grande en móvil para que se lea la marca */
+  .brand img { height: 56px; }
+
+  /* Buscador móvil: al tocar la lupa, el campo se despliega sobre la barra */
+  .search.expanded {
+    position: absolute; left: 16px; right: 16px; width: auto; min-width: 0;
+    padding: 10px 16px; background: var(--glass-2); border-color: var(--accent);
+    z-index: 6; box-shadow: var(--shadow);
+  }
+  .search.expanded input { display: block; }
+  .search.expanded svg { color: var(--accent-soft); }
+}
+
+
+/* ===================================================================
+   Transición entre páginas: INMERSIÓN (sumergirse / emerger)
+   Sin dependencias, funciona en file://. Al salir, el contenido se
+   sumerge (desenfoque + tinte azul + hundida); al entrar, emerge.
+   La salida y el volver atrás los maneja js/transitions.js.
+   =================================================================== */
+.dip-veil { position: fixed; inset: 0; z-index: 45; pointer-events: none; opacity: 0;
+  background: radial-gradient(120% 120% at 50% 35%, rgba(30,110,210,.45), rgba(4,18,48,.78)); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .app { animation: surface .6s ease both; }
+  .dip-veil { animation: veilOut .6s ease both; }
+  body.is-leaving .app { animation: submerge .42s ease forwards; }
+  body.is-leaving .dip-veil { animation: veilIn .42s ease forwards; }
+}
+@keyframes submerge { to { filter: blur(6px) saturate(1.25); opacity: 0; transform: translateY(26px) scale(.97); } }
+@keyframes surface { from { filter: blur(8px); opacity: 0; transform: translateY(-20px) scale(1.02); } to { filter: none; opacity: 1; transform: none; } }
+@keyframes veilIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes veilOut { from { opacity: 1; } to { opacity: 0; } }
+
+
+/* ===================================================================
+   Fondo de "situaciones Befine" que rota (marca de agua). Va sobre el
+   agua y DEBAJO de la profundidad/velo, para que se hunda al bajar.
+   Lo controla js/scenes.js. Ajusta la opacidad en .scene.show.
+   =================================================================== */
+.scenes-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.scenes-bg .scene {
+  position: absolute; inset: 0; background-size: cover; background-position: center;
+  opacity: 0; transition: opacity 1.6s ease;
+}
+.scenes-bg .scene.show { opacity: .6; }                /* <- fotos de fondo visibles (ajustable) */
+/* Velo oscuro sobre las fotos para que el texto blanco se lea */
+.scenes-bg::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(18,110,168,.40), rgba(9,64,108,.60)); }
+body.fx-off .scenes-bg .scene { opacity: 0; transition: opacity .4s ease; }
+
+
+/* ===================================================================
+   Modo ligero (js/perf.js): botón único inf. izq. + mensajito.
+   En modo ligero se desactiva la transición de inmersión.
+   =================================================================== */
+.sound-btn.lite-on { color: var(--muted); }
+body.lite .dip-veil { display: none !important; }
+body.lite .app { animation: none !important; }
+
+.lite-tip {
+  position: fixed; left: 16px; bottom: 70px; z-index: 41; max-width: 220px;
+  background: var(--glass-2); border: 1px solid var(--line); color: var(--ink);
+  font-size: 12.5px; line-height: 1.35; padding: 10px 12px; border-radius: 12px;
+  box-shadow: var(--shadow); backdrop-filter: blur(8px); cursor: pointer;
+  opacity: 0; transform: translateY(8px); transition: opacity .35s ease, transform .35s ease;
+}
+.lite-tip.show { opacity: 1; transform: none; }
+
+
+/* ===== Panel de vista previa (SOLO DESARROLLO) — quitar antes de publicar ===== */
+.dev-bands{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:55;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:94vw;
+  background:var(--glass-2);border:1px solid var(--line);border-radius:14px;padding:8px 12px;
+  backdrop-filter:blur(10px);box-shadow:var(--shadow)}
+.dev-bands .dev-lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+
+/* ===== Móvil: ☰ menú izquierda · logo centrado · 🔍 buscar + 🛒 carrito derecha ===== */
+@media (max-width: 720px) {
+  .topbar .row { position: relative; padding-inline: 18px; }   /* más aire, no pegado a la orilla */
+  .topbar .row .menu-btn { order: -1; }                        /* menú a la izquierda */
+  .topbar .row .search { order: 1; margin-left: auto; }        /* buscar a la derecha */
+  .nav { left: 16px !important; right: auto !important; max-width: calc(100vw - 32px); box-sizing: border-box; } /* panel desde la izquierda */
+  .topbar .row .brand {                                        /* logo al centro */
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  }
+  .topbar .row .spacer { display: none; }
+  .topbar .row .cart-btn { order: 2; }                         /* carrito a la derecha, junto al buscador */
+}
+
+
+/* ===================================================================
+   TEMA CLARO (VISTA PREVIA) — se activa desde el panel dev. Fondo blanco
+   y texto oscuro para evaluar el look "limpio" de agua purificada.
+   =================================================================== */
+body.tema-claro {
+  --bg: #eef7fd; --ink: #10333f; --muted: #4d6f7e; --accent-soft: #0E6AA0;
+  --glass: rgba(255,255,255,.72); --glass-2: rgba(255,255,255,.86);
+  --line: rgba(11,78,122,.18); --line-soft: rgba(11,78,122,.10);
+  --shadow: 0 18px 50px -24px rgba(11,52,110,.35);
+  --veil: linear-gradient(180deg, rgba(232,245,253,.6), rgba(205,231,246,.75));
+  color-scheme: light;
+}
+body.tema-claro .topbar { background: linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.82)); border-bottom-color: rgba(11,78,122,.14); box-shadow: 0 6px 22px -16px rgba(11,52,110,.35); }
+body.tema-claro .nav a { color: var(--ink); }
+body.tema-claro .nav a:hover, body.tema-claro .nav a[aria-current="page"] { color: var(--accent); }
+body.tema-claro .search { background: rgba(255,255,255,.85); }
+body.tema-claro .cart-btn, body.tema-claro .menu-btn { background: #fff; color: var(--accent); }
+body.tema-claro .btn-ghost { background: #fff; border-color: rgba(11,78,122,.2); color: var(--ink); }
+body.tema-claro input[type=text], body.tema-claro input[type=email], body.tema-claro select { background: #fff; color: var(--ink); }
+body.tema-claro .sound-btn { background: rgba(255,255,255,.85); color: var(--accent); }
+body.tema-claro footer.site { background: linear-gradient(180deg, transparent, rgba(220,240,250,.6)); }
+/* Fondo claro: velos y agua atenuados para que domine el blanco */
+body.tema-claro .bg-veil { background: radial-gradient(130% 100% at 50% -10%, rgba(255,255,255,0) 45%, rgba(180,215,238,.30) 100%); }
+body.tema-claro .scenes-bg::after { background: linear-gradient(180deg, rgba(238,247,253,.48), rgba(210,233,248,.66)); }
+body.tema-claro #water { opacity: .92; }
+body.tema-claro .depth { background: linear-gradient(180deg, rgba(220,238,250,.05), rgba(150,195,225,.55)); }
+body.tema-claro .drawer-backdrop, body.tema-claro .overlay { background: rgba(20,60,90,.35); }
+body.tema-claro::before { mix-blend-mode: multiply; opacity: .05; }
+/* Textos que en claro quedaban invisibles (celeste claro sobre blanco) */
+body.tema-claro .hero h1 .serif { background-image: linear-gradient(90deg, #0E76B8, #29ABE2, #0E76B8); }
+body.tema-claro .hero .hint { opacity: 1; color: #6a8a99; }
+body.tema-claro .sec-head .kicker { color: #0E76B8; }
+
+/* ===== FIX: en modo ligero (sin animaciones) el agua SIEMPRE oculta =====
+   Va al final para ganarle a `body.tema-claro #water { opacity:.92 }`.
+   Con el agua oculta se ve el fondo claro (#eef7fd), igual que el inicio. */
+body.fx-off #water, body.fx-off .bubbles { opacity: 0 !important; }
+body.tema-claro.fx-off { background: var(--bg) !important; }
+
+/* ===== Bienvenida (loader): SIEMPRE sobre la cordillera oscura =====
+   Aunque el tema sea claro, el saludo y el texto van en claro para que se
+   lean de noche y madrugada (y en todas las bandas). */
+body.tema-claro .loader h1,
+body.tema-claro .loader h1 .accent { color: #eef7fd; }
+body.tema-claro .loader p.msg { color: rgba(238,247,253,.92); }
+
+/* Botón "tema claro" del panel de vista previa (dev) */
+.dev-bands .dev-theme { font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line);
+  background: rgba(255,255,255,.06); color: var(--ink); }
+.dev-bands .dev-theme.on { background: #fff; color: #0B4E7A; border-color: transparent; }
+
+
+/* ===== Toggle de tema (sol/luna), junto al botón inferior izquierdo ===== */
+.theme-btn { position: fixed; left: 70px; bottom: calc(16px + env(safe-area-inset-bottom,0px)); z-index: 40;
+  width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line);
+  background: rgba(10,40,92,.6); backdrop-filter: blur(8px); color: var(--accent-soft);
+  display: grid; place-items: center; cursor: pointer; transition: transform .15s ease; }
+.theme-btn:hover { transform: translateY(-2px); }
+.theme-btn svg { width: 20px; height: 20px; }
+body.tema-claro .theme-btn { background: rgba(255,255,255,.85); color: var(--accent); }
+
+/* Aviso de noche que apunta al botón de tema */
+.theme-hint { position: fixed; left: 16px; bottom: 74px; z-index: 41; max-width: 220px;
+  background: var(--glass-2); border: 1px solid var(--line); color: var(--ink);
+  font-size: 12.5px; line-height: 1.35; padding: 10px 12px; border-radius: 12px;
+  box-shadow: var(--shadow); backdrop-filter: blur(8px); cursor: pointer;
+  opacity: 0; transform: translateY(8px); transition: opacity .35s ease, transform .35s ease; }
+.theme-hint.show { opacity: 1; transform: none; }
+.theme-hint::after { content: ""; position: absolute; left: 78px; bottom: -7px; width: 14px; height: 14px;
+  background: inherit; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transform: rotate(45deg); }
+
+/* Theme-hint: fondo oscuro en modo claro */
+body.tema-claro .theme-hint { background: rgba(11,78,122,.92); color: #fff; border-color: rgba(255,255,255,.15); }
+body.tema-claro .theme-hint::after { background: rgba(11,78,122,.92); border-color: rgba(255,255,255,.15); }
+
+/* Cursor: azul profundo en modo día (screen blend invisible en blanco → multiply) */
+body.tema-claro .cur-dot { background: #0B4E7A; mix-blend-mode: multiply; }
+body.tema-claro .cur-ring { border-color: #0B4E7A; mix-blend-mode: multiply; }
+body.tema-claro .cur-ring.big { background: rgba(11,78,122,.10); mix-blend-mode: multiply; }

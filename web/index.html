@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Befine Store · Agua purificada a domicilio</title>
+  <meta name="description" content="Agua purificada a domicilio en Quilicura y el sector norte de Santiago. Recargas, bidones y dispensadores en pocos clicks.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&display=swap">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/shell.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+<script>try{document.body.classList.toggle('tema-claro',(localStorage.getItem('befine_tema')||'claro')==='claro');}catch(e){document.body.classList.add('tema-claro');}</script>
+
+<!-- Fondo de agua + atmósfera (base del demo de Carlos) -->
+<canvas id="water" aria-hidden="true"></canvas>
+<div class="bg-veil"></div>
+
+<!-- PROFUNDIDAD: capa oscura que crece con el scroll (efecto "hundirse").
+     Su opacidad la controla js/home.js según cuánto bajas. -->
+<div class="depth" id="depth" aria-hidden="true"></div>
+
+<div class="bubbles" id="bubbles" aria-hidden="true"></div>
+<div class="cur-ring" id="curRing" aria-hidden="true"></div>
+<div class="cur-dot" id="curDot" aria-hidden="true"></div>
+
+<!-- INTRO / LOADER (saludo por hora) -->
+<div class="loader" id="loader" role="dialog" aria-label="Bienvenida">
+  <div class="loader-inner">
+    <img class="l-logo" src="assets/logo-befine.png" alt="Befine">
+    <h1 id="loaderGreet">Hola</h1>
+    <p class="msg" id="loaderMsg"></p>
+    <div class="bar"><span></span></div>
+  </div>
+</div>
+<!-- Si la bienvenida ya se vio en esta visita, se oculta antes de pintar (sin parpadeo) -->
+<script>try{if(sessionStorage.getItem('befine_intro')==='1')document.getElementById('loader').classList.add('hide');}catch(e){}</script>
+
+<!-- BARRA SUPERIOR (la inyecta js/shell.js — mismo formato en todas las páginas) -->
+<div id="app-header"></div>
+
+<div class="app">
+  <div class="wrap">
+
+    <!-- HERO: mensaje a la izquierda + PEDIDO RÁPIDO de la recarga a la derecha -->
+    <section class="hero" id="hero">
+      <!-- BANNER: imagen de fondo del hero. La llena js/home.js con lo que el administrador sube en el panel
+           (Banner y eslogan). Sin imagen configurada queda oculto y el hero se ve como siempre. -->
+      <div class="hero-banner" id="heroBanner" hidden></div>
+      <div class="hero-grid">
+        <div class="inner">
+          <!-- Eslogan: eyebrow, título y subtítulo también se editan desde el panel. Lo que hay aquí es el texto original (respaldo). -->
+          <p class="eyebrow" id="heroEyebrow">Agua purificada a domicilio · Quilicura y sector norte</p>
+          <h1 id="heroTitulo">Recarga de agua purificada <span class="serif">a domicilio</span> en Quilicura</h1>
+          <p class="sub" id="heroSub">Bidones y recargas de agua purificada de 20 L y 12 L, dispensadores frío/calor y despacho a domicilio en Quilicura, Huechuraba, Recoleta, Valle Grande y Valle Lo Campino. Envío gratis desde $7.000 y entrega en 24 horas hábiles.</p>
+          <!-- Frase secundaria y pequeña (no es lo relevante del e-commerce). -->
+          <p class="hint">Mueve el mouse: el agua reacciona en toda la página.</p>
+          <!-- (El control de animación/sonido se unificó en el botón único de la esquina inferior izquierda: js/perf.js) -->
+          <div class="trust">
+            <span><b>5 años</b> entregando</span>
+            <span><b>+450</b> clientes</span>
+            <span><b>Entrega 24 h</b> hábiles</span>
+          </div>
+        </div>
+        <!-- Producto protagonista (Recarga 20 L): variantes + Agregar + Comprar ahora
+             + enlace a su página propia. Lo llena js/home.js. -->
+        <div class="qorder" id="qorder" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- DESTACADOS (carrusel con brillo) -->
+    <section class="block">
+      <div class="sec-head">
+        <span class="kicker">Destacados</span>
+        <h2>Lo más pedido</h2>
+        <p>Arrastra para explorar. Compra una vez y Befine te recuerda.</p>
+      </div>
+      <div class="track" id="destacados"></div>
+    </section>
+
+    <!-- RESEÑAS (prueba social) — la llena js/home.js desde Befine.getResenas() -->
+    <section class="block reviews reveal" id="reviews" aria-label="Reseñas de clientes">
+      <div class="sec-head">
+        <span class="kicker">Reseñas</span>
+        <h2>Lo que dicen nuestros clientes</h2>
+        <p>La experiencia de quienes reciben su agua Befine a domicilio.</p>
+      </div>
+      <div class="rev-summary" id="revSummary" aria-live="polite"></div>
+      <!-- Carrusel: 3 visibles en PC, 2 en tablet, 1 en celular (desliza o rota solo) -->
+      <div class="rev-carousel" id="revCarousel">
+        <button class="rev-nav prev" type="button" aria-label="Reseña anterior">‹</button>
+        <div class="rev-track" id="revGrid"></div>
+        <button class="rev-nav next" type="button" aria-label="Reseña siguiente">›</button>
+      </div>
+      <div class="rev-dots" id="revDots" role="tablist" aria-label="Elegir reseña"></div>
+    </section>
+
+
+  </div>
+
+  <!-- PIE (lo inyecta js/shell.js — mismo formato en todas las páginas) -->
+  <div id="app-footer"></div>
+</div>
+
+<button class="sound-btn" id="soundBtn" aria-label="Silenciar"></button>
+
+<!-- SCRIPTS: base → shell → agua → bandas → home -->
+<script src="js/local-client.js"></script>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/transitions.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/water.js"></script>
+<script src="js/bands.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/perf.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

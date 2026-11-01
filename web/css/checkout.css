@@ -1,0 +1,125 @@
+/* =====================================================================
+   checkout.css — Página de pago (checkout.html)
+   Una sola página: formulario a la izquierda, resumen fijo a la derecha.
+   En celular: resumen al final y barra inferior con total + Pagar.
+   ===================================================================== */
+.co-head { padding-block: clamp(20px, 4vw, 36px) 8px; }
+.co-head .volver { font-size: 14px; font-weight: 700; color: var(--accent-soft); }
+body.tema-claro .co-head .volver { color: var(--accent); }
+.co-head h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 4.6vw, 42px); letter-spacing: -.02em; margin: 8px 0 12px; }
+.trust { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; margin: 0 0 22px; color: var(--muted); font-size: 13.5px; font-weight: 600; }
+.trust li { display: inline-flex; align-items: center; gap: 7px; }
+.trust svg { width: 17px; height: 17px; color: var(--accent-soft); }
+body.tema-claro .trust svg { color: var(--accent); }
+
+.co-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 22px; align-items: start; padding-bottom: 56px; }
+.co-side { position: sticky; top: 96px; }
+@media (max-width: 960px) { .co-grid { grid-template-columns: 1fr; } .co-side { position: static; } }
+
+/* Aviso de sesión (invitado / registrado) */
+.co-sesion { margin-bottom: 16px; }
+.co-sesion .aviso { align-items: center; flex-wrap: wrap; }
+.co-sesion .aviso .t { flex: 1 1 220px; }
+.co-sesion .aviso a.link { font-weight: 800; color: var(--accent-soft); white-space: nowrap; }
+body.tema-claro .co-sesion .aviso a.link { color: var(--accent); }
+.co-sesion .avatar { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff;
+  background: linear-gradient(140deg, var(--accent-soft), var(--accent)); }
+
+/* Medio de pago: íconos de tarjetas genéricos */
+.ocard.pago { align-items: center; }
+.fld > label.ocard { font-weight: 400; opacity: 1; color: var(--ink); } /* la tarjeta no hereda el estilo de etiqueta */
+.ocard .tarjetas { margin-left: auto; display: flex; gap: 4px; }
+.ocard .tarjetas i { width: 30px; height: 20px; border-radius: 4px; background: linear-gradient(135deg, #1b3a6b, #2c6fd1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.25); }
+.ocard .tarjetas i:nth-child(2) { background: linear-gradient(135deg, #f2a63c, #e0602a); }
+.ocard .tarjetas i:nth-child(3) { background: linear-gradient(135deg, #7a869a, #3d4656); }
+@media (max-width: 420px) { .ocard .tarjetas { display: none; } }
+
+/* ---------- Resumen ---------- */
+.resumen h2 { font-family: var(--font-display); font-weight: 800; font-size: 19px; margin: 0 0 12px; }
+.r-items { display: flex; flex-direction: column; gap: 12px; max-height: 320px; overflow: auto; padding-right: 2px; }
+.r-item { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; }
+.r-item .th { width: 46px; height: 46px; border-radius: 10px; }
+.r-item .nm { font-weight: 700; font-size: 14px; line-height: 1.25; }
+.r-item .vr { font-size: 12px; color: var(--muted); }
+.r-item .qty { display: inline-flex; align-items: center; gap: 2px; margin-top: 4px; border: 1px solid var(--line); border-radius: 9px; }
+.r-item .qty button { width: 28px; height: 28px; border: 0; background: none; color: var(--ink); font-size: 16px; cursor: pointer; border-radius: 8px; }
+.r-item .qty button:hover { background: rgba(255,255,255,.08); }
+.r-item .qty span { min-width: 22px; text-align: center; font-weight: 700; font-size: 13px; }
+.r-item .pr { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.r-item .pr button { display: block; margin: 4px 0 0 auto; border: 0; background: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; }
+.r-envio { margin: 14px 0 2px; }
+.r-envio .barra { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.r-envio .barra span { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--accent-soft), var(--mint)); transition: width .5s cubic-bezier(.2,.8,.2,1); }
+.r-envio p { margin: 6px 0 0; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.r-tot { margin: 16px 0; border-top: 1px solid var(--line); padding-top: 12px; }
+.r-tot div { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; font-size: 14.5px; }
+.r-tot dt { color: var(--muted); } .r-tot dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.r-tot dd.gratis { color: var(--mint); }
+body.tema-claro .r-tot dd.gratis { color: #1f8a5b; }
+.r-tot .total { margin-top: 6px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.r-tot .total dt { color: var(--ink); font-weight: 800; font-size: 16px; }
+.r-tot .total dd { font-family: var(--font-display); font-weight: 800; font-size: 26px; }
+.legal { font-size: 12px; color: var(--muted); margin: 12px 0 0; line-height: 1.45; }
+.legal a { text-decoration: underline; text-underline-offset: 2px; }
+
+/* ---------- Vacío ---------- */
+.co-vacio { text-align: center; max-width: 520px; margin: 10px auto 60px; padding: 36px 24px; }
+.co-vacio h2 { font-family: var(--font-display); font-weight: 800; margin: 0 0 6px; }
+.co-vacio .btn { margin-top: 16px; }
+
+/* ---------- Barra inferior (celular) ---------- */
+.co-bar { display: none; }
+@media (max-width: 960px) {
+  .co-bar:not([hidden]) { position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--glass-2); backdrop-filter: blur(14px); border-top: 1px solid var(--line);
+    box-shadow: 0 -12px 30px -18px rgba(0,0,0,.5); }
+  .co-bar small { display: block; font-size: 12px; color: var(--muted); }
+  .co-bar b { font-family: var(--font-display); font-weight: 800; font-size: 22px; }
+  .co-bar .btn { flex: 0 1 220px; }
+  body.page-checkout .app { padding-bottom: 84px; }
+  body.page-checkout .sound-btn, body.page-checkout .theme-btn { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); } /* sobre la barra de pago */
+  body.page-checkout:has(.co-bar[hidden]) .sound-btn, body.page-checkout:has(.co-bar[hidden]) .theme-btn { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+}
+body.tema-claro .co-bar { background: rgba(255,255,255,.95); }
+
+/* ---------- Confirmación ---------- */
+.co-ok { max-width: 640px; margin: 4px auto 64px; }
+.co-ok .sheet { text-align: center; }
+.co-ok h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(24px, 4vw, 32px); margin: 0 0 6px; letter-spacing: -.01em; }
+.co-ok .lead { color: var(--muted); margin: 0 auto 18px; max-width: 46ch; }
+.co-ok .det { text-align: left; display: grid; gap: 10px; margin: 18px 0 4px; padding: 16px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,.03); }
+body.tema-claro .co-ok .det { background: #f7fbfe; }
+.co-ok .det div { display: flex; gap: 12px; font-size: 14px; }
+.co-ok .det dt { flex: 0 0 96px; color: var(--muted); } .co-ok .det dd { margin: 0; font-weight: 600; }
+.co-ok .acciones { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+/* Confirmando el pago al volver de Mercado Pago (HU-09) */
+.co-ok .okmark.espera circle, .co-ok .okmark.espera path { stroke: var(--accent); }   /* pago aún sin confirmar: reloj, no ✓ */
+.co-ok .co-espera .spin { display: block; width: 40px; height: 40px; border-width: 3.5px; margin: 6px auto 16px; color: var(--accent); }
+.co-ok .crear { text-align: left; }
+.co-ok .crear h3 { font-family: var(--font-display); font-weight: 800; font-size: 19px; margin: 0 0 4px; }
+.co-ok .crear .beneficios { list-style: none; padding: 0; margin: 10px 0 14px; display: grid; gap: 6px; font-size: 13.5px; color: var(--muted); }
+.co-ok .crear .beneficios li::before { content: "✓"; color: var(--mint); font-weight: 800; margin-right: 8px; }
+.co-ok .crear .fila { display: flex; gap: 10px; align-items: flex-end; }
+.co-ok .crear .fila .fld { flex: 1; }
+@media (max-width: 520px) { .co-ok .crear .fila { flex-direction: column; align-items: stretch; } }
+
+/* ---------- Cupón de descuento (RF-20) ---------- */
+.r-cupon { margin: 14px 0 0; }
+.r-cupon-abrir { background: none; border: 0; padding: 4px 0; color: var(--accent-soft); font: 700 13.5px var(--font-body); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+body.tema-claro .r-cupon-abrir { color: var(--accent); }
+.r-cupon-form { display: flex; gap: 8px; margin-top: 8px; }
+.r-cupon-form .inp { flex: 1; width: 0; min-width: 0; min-height: 44px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: rgba(4,16,40,.55);
+  color: var(--ink); font: 700 15px var(--font-body); letter-spacing: .04em; text-transform: uppercase; }
+.r-cupon-form .inp::placeholder { text-transform: none; letter-spacing: 0; font-weight: 500; }
+body.tema-claro .r-cupon-form .inp { background: #fff; border-color: rgba(11,78,122,.22); color: #10333f; }
+.r-cupon-form .inp:focus { outline: none; border-color: var(--accent-soft); }
+.r-cupon-form .btn { min-height: 44px; padding: 10px 16px; }
+.r-cupon-msg { margin: 8px 0 0; font-size: 13px; font-weight: 600; color: #ff8a8a; line-height: 1.4; }
+body.tema-claro .r-cupon-msg { color: #c62828; }
+.r-cupon-msg a { text-decoration: underline; text-underline-offset: 2px; font-weight: 800; }
+.r-cupon-ok { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 9px 12px; border-radius: 12px; font-size: 13.5px;
+  background: rgba(70,185,138,.14); border: 1px solid rgba(70,185,138,.35); color: var(--ink); }
+.r-cupon-ok svg { width: 18px; height: 18px; color: var(--mint); flex: none; }
+body.tema-claro .r-cupon-ok svg { color: #1f8a5b; }
+.r-cupon-ok b { letter-spacing: .04em; }
+.r-cupon-ok button { margin-left: auto; background: none; border: 0; color: var(--muted); font: 600 13px var(--font-body); cursor: pointer; text-decoration: underline; }

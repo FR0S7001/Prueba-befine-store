@@ -1,0 +1,70 @@
+/* =====================================================================
+   tokens.css — Sistema de color Befine (design tokens)
+   ---------------------------------------------------------------------
+   Marca tomada del logo: celeste Befine + azul profundo. La experiencia
+   es inmersiva (sobre "agua"), así que la paleta se usa como una columna:
+   celeste/espuma arriba → azul profundo abajo. Se suman dos acentos de
+   calidez y cercanía: verde naturaleza y ámbar (sol/ocaso).
+
+   Paleta base:
+     Celeste Befine  #29ABE2   (marca: botones, enlaces, acento)
+     Azul profundo   #0B4E7A   (títulos, profundidad del agua)
+     Verde natura    #46B98A   (frescura, cercanía, "disponible")
+     Ámbar sol       #F2A63C   (calidez, ofertas, ocaso)
+     Celeste claro   #DBF0FA   (espuma, superficies suaves)
+     Blanco          #FFFFFF
+     Gris texto      #33404A   ·  Gris borde  #E4E9EC
+
+   Los tonos por HORA (amanecer, mediodía, ocaso, noche, madrugada) se
+   definen en js/bands.js y sobrescriben --accent / --accent-soft / --veil.
+   ===================================================================== */
+:root {
+  color-scheme: dark;
+
+  /* Paleta de marca (valores crudos) */
+  --celeste-befine: #29ABE2;
+  --azul-profundo: #0B4E7A;
+  --verde: #46B98A;
+  --ambar: #F2A63C;
+  --celeste: #DBF0FA;
+  --blanco: #FFFFFF;
+  --gris-texto: #33404A;
+  --gris-borde: #E4E9EC;
+
+  /* Roles (por defecto = banda "mañana"; bands.js los ajusta por hora) */
+  --accent: #29ABE2;          /* celeste Befine */
+  --accent-soft: #8EC5FF;     /* celeste claro */
+  --mint: #46B98A;            /* verde naturaleza */
+  --amber: #F2A63C;           /* sol / ocaso */
+  --foam: #DBF0FA;            /* espuma */
+
+  --ink: #EAF6FB;             /* texto principal (claro, sobre agua) */
+  --muted: #A3BCDD;           /* texto secundario */
+
+  --bg: #0B4A94;             /* base celeste (más cerca del logo Befine) */
+  --glass: rgba(8,30,70, .55);
+  --glass-2: rgba(10,40,92, .60);
+
+  --line: rgba(130,175,240, .20);
+  --line-soft: rgba(130,175,240, .10);
+  --shadow: 0 20px 55px -22px rgba(0, 0, 0, .7);
+  --veil: linear-gradient(180deg, rgba(11,52,110, .82), rgba(4,16,40, .92));
+
+  /* Color del texto sobre botones/acentos claros (siempre legible) */
+  --on-accent: #04183A;
+
+  /* Tipografías */
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+
+  /* Layout */
+  --wrap: 1120px;
+  --gutter: 16px;
+  --radius: 16px;
+  --radius-lg: 22px;
+
+  /* Capas */
+  --z-water: 0; --z-veil: 1; --z-app: 2; --z-topbar: 20;
+  --z-drawer: 60; --z-modal: 70; --z-toast: 80; --z-cursor: 9999;
+}

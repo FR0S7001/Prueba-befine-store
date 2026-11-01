@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pago simulado · Befine Store (modo local)</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0B2A44; color: #fff; font-family: var(--font-body, system-ui, sans-serif); padding: 20px; }
+    .caja { width: 100%; max-width: 440px; background: #fff; color: #13293A; border-radius: 18px; padding: 26px; box-shadow: 0 30px 80px -30px rgba(0,0,0,.6); }
+    .caja h1 { margin: 0 0 6px; font-size: 22px; }
+    .modo { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #FDF1DC; color: #A3610B; font-size: 12px; font-weight: 800; margin-bottom: 12px; }
+    .monto { font-size: 34px; font-weight: 800; margin: 10px 0 4px; }
+    .nota { color: #5F7484; font-size: 13.5px; line-height: 1.45; margin: 0 0 18px; }
+    .acc { display: grid; gap: 10px; }
+    button { font: inherit; font-weight: 700; padding: 13px; border-radius: 12px; border: 1px solid #CBD6DE; background: #fff; color: #13293A; cursor: pointer; }
+    button.ok { background: #1F8A5B; border-color: #1F8A5B; color: #fff; }
+    button.mal { color: #C0392B; }
+    button:disabled { opacity: .55; cursor: wait; }
+    #msg { margin-top: 12px; color: #C0392B; font-weight: 600; font-size: 14px; min-height: 18px; }
+  </style>
+</head>
+<body>
+  <main class="caja" id="caja"><p>Cargando pedido…</p></main>
+  <script src="js/local-client.js"></script>
+  <script src="js/data.js"></script>
+  <script>
+  (async function () {
+    const caja = document.getElementById("caja");
+    const id = new URLSearchParams(location.search).get("pedido") || "";
+    const p = await Befine.estadoPedido(id);
+    if (!p) { caja.innerHTML = '<h1>Pedido no encontrado</h1><p class="nota">Abre esta página desde el checkout, con la misma sesión con la que hiciste el pedido.</p><a href="index.html">Volver a la tienda</a>'; return; }
+    caja.innerHTML = `
+      <span class="modo">MODO LOCAL · pago simulado</span>
+      <h1>Pedido #${p.numero}</h1>
+      <div class="monto">${Befine.clp(p.total)}</div>
+      <p class="nota">Aquí no se cobra nada. Elige qué resultado quieres probar: la tienda reacciona igual que con el pago real (estado del pedido, stock y puntos).</p>
+      <div class="acc">
+        <button class="ok" data-r="aprobado">Aprobar el pago</button>
+        <button data-r="pendiente">Dejar el pago pendiente</button>
+        <button class="mal" data-r="rechazado">Rechazar el pago</button>
+      </div><div id="msg" role="alert"></div>`;
+    caja.addEventListener("click", async (e) => {
+      const b = e.target.closest("[data-r]"); if (!b) return;
+      caja.querySelectorAll("button").forEach((x) => x.disabled = true);
+      const { data, error } = await sb.functions.invoke("pago-simulado", { body: { pedido_id: id, resultado: b.dataset.r } });
+      if (error || !data) { document.getElementById("msg").textContent = (error && error.message) || "No se pudo registrar el pago."; caja.querySelectorAll("button").forEach((x) => x.disabled = false); return; }
+      location.href = "checkout.html?pago=" + data.vuelta + "&pedido=" + encodeURIComponent(id);
+    });
+  })();
+  </script>
+</body>
+</html>

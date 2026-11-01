@@ -1,0 +1,30 @@
+/* =====================================================================
+   producto.css — Estilos de la ficha de producto (producto.html)
+   ===================================================================== */
+
+.ficha { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-block: clamp(24px, 4vw, 44px); align-items: start; }
+@media (max-width: 820px) { .ficha { grid-template-columns: 1fr; gap: 20px; } }
+
+/* Imagen grande (placeholder degradado según categoría) */
+.ficha .media { border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 4 / 3; position: relative; }
+.ficha .media::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 80% at 30% 12%, rgba(255,255,255,.28), transparent 55%), var(--v-grad, linear-gradient(160deg,#1E6FD0,#0A2A66)); }
+
+/* Panel de compra */
+.ficha .buybox .breadcrumb { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+.ficha .buybox .breadcrumb a:hover { color: var(--accent-soft); }
+.ficha .buybox h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: -.02em; font-size: clamp(24px, 4vw, 36px); margin: 0 0 8px; line-height: 1.1; }
+.ficha .buybox .desc { color: var(--muted); margin: 0 0 20px; }
+.ficha .buybox .price { font-family: var(--font-display); font-weight: 800; font-size: 32px; margin: 0 0 20px; }
+
+/* Selector de variantes (cuando el producto tiene más de una) */
+.variantes { margin-bottom: 20px; }
+.variantes .lbl { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+.variantes .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.variantes .opt {
+  font: inherit; font-size: 14px; cursor: pointer; padding: 10px 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--ink); transition: border-color .2s, background .2s;
+}
+.variantes .opt.active { border-color: var(--accent); background: rgba(42,130,230,.12); color: var(--accent-soft); }
+
+.ficha .buybox .add-row { display: flex; gap: 12px; align-items: center; margin-top: 8px; }
+.ficha .buybox .stock { color: var(--muted); font-size: 13px; margin-top: 14px; }

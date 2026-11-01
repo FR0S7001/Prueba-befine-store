@@ -1,0 +1,16 @@
+{
+  "name": "befine-store-local",
+  "version": "0.3.0-local",
+  "private": true,
+  "description": "Befine Store con base de datos local (SQLite) para pruebas, y banner y eslogan editables desde el panel",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "db:reset": "node server/index.js --reset",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "license": "MIT"
+}

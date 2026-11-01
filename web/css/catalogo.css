@@ -1,0 +1,82 @@
+/* =====================================================================
+   catalogo.css — Estilos de la página de Catálogo (catalogo.html)
+   Aquí el foco es velocidad y claridad: grilla escaneable y filtros.
+   ===================================================================== */
+
+.cat-head { padding-block: clamp(28px, 5vw, 48px) 8px; }
+.cat-head h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 5vw, 44px); margin: 0; letter-spacing: -.02em; }
+.cat-head p { color: var(--muted); margin: 8px 0 0; }
+
+/* Barra de herramientas: filtros por categoría + búsqueda + orden */
+.toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 18px 0 24px; }
+.filters { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+.filters button {
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 8px 14px;
+  border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--ink);
+  transition: transform .15s, background .2s, color .2s;
+}
+.filters button:hover { transform: translateY(-1px); }
+.filters button.active { background: var(--accent); color: #fff; border-color: transparent; }
+.toolbar .spacer { flex: 1; }
+.toolbar .search-lg { min-width: 220px; }
+.toolbar select { width: auto; }
+
+/* Grilla de productos: responsiva, se adapta sola */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; padding-bottom: 48px; }
+.grid .card .body h3 { min-height: 2.4em; }
+
+.empty-state { text-align: center; color: var(--muted); padding: 60px 0; }
+
+/* ---------- Responsivo: barra de herramientas en móvil ----------
+   Buscador arriba a lo ancho, filtros en una fila deslizable, y abajo
+   el orden. Evita el desborde en pantallas chicas. */
+@media (max-width: 640px) {
+  .toolbar { gap: 10px; align-items: stretch; }
+  .toolbar .spacer { display: none; }
+  .toolbar .search-lg { order: 1; width: 100%; min-width: 0; }
+  .filters { order: 2; width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters button { flex: 0 0 auto; }
+  .toolbar select { order: 3; flex: 1 1 auto; }
+}
+
+@media (max-width: 520px) {
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid .card .vessel { height: 120px; }
+  .grid .card .body { padding: 12px; }
+  .grid .card .body h3 { font-size: 15px; min-height: 2.6em; }
+  /* En tarjetas angostas: precio y botón apilados (el botón a lo ancho) */
+  .grid .card .price-row { flex-direction: column; align-items: stretch; gap: 8px; }
+  .grid .card .price-row .btn { width: 100%; }
+  .grid .card .price { font-size: 17px; }
+}
+/* Pantallas muy chicas: una sola columna para que nunca se apriete */
+@media (max-width: 340px) { .grid { grid-template-columns: 1fr; } }
+
+/* ===================================================================
+   Efecto "flotar" (el mismo bob suave de Destacados en la home)
+   Se aplica a las tarjetas de la grilla.
+   =================================================================== */
+
+/* Modo Rápido: cada tarjeta flota suave y desfasada de las demás */
+.grid .card { animation: floatCard 7s ease-in-out infinite; }
+.grid .card:nth-child(2n) { animation-delay: -1.6s; }
+.grid .card:nth-child(3n) { animation-delay: -3.1s; }
+.grid .card:nth-child(4n) { animation-delay: -2.4s; }
+@keyframes floatCard { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
+
+/* Respeta a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .grid .card { animation: none; }
+}
+
+/* ===================================================================
+   Tema claro: botones activos con azul profundo + texto blanco.
+   Contraste ≈8:1 → pasa WCAG AA y AAA.
+   En oscuro ya usan var(--accent) (cyan) con texto oscuro — no se toca.
+   =================================================================== */
+body.tema-claro .filters button.active {
+  background: #0B4E7A;
+  color: #fff;
+  border-color: transparent;
+}

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Panel de administración · Befine Store</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="page-admin">
+
+<!-- ============ Barra superior ============ -->
+<header class="ad-top">
+  <a class="ad-brand" href="admin.html"><img src="assets/logo-befine.png" alt="Befine"><span>Panel</span></a>
+  <span class="ad-spacer"></span>
+  <div class="ad-user" id="adUser" hidden>
+    <span class="ad-avatar" id="adAvatar">B</span>
+    <span class="ad-who"><b id="adNombre"></b><small id="adRol"></small></span>
+  </div>
+  <a class="ad-btn ghost" href="index.html">Ver tienda</a>
+  <button class="ad-btn ghost" id="adSalir" type="button" hidden>Salir</button>
+</header>
+
+<div class="ad-shell">
+  <!-- Navegación por secciones (solo las que el rol puede ver) -->
+  <nav class="ad-nav" id="adNav" aria-label="Secciones del panel" hidden></nav>
+
+  <main class="ad-main" id="adMain">
+    <!-- Estados de acceso -->
+    <div class="ad-estado" id="vCarga"><span class="ad-spin"></span> Cargando panel…</div>
+
+    <section class="ad-estado ad-card" id="vSinSesion" hidden>
+      <h1>Panel de administración</h1>
+      <p>Ingresa con tu cuenta de Befine para continuar.</p>
+      <a class="ad-btn" href="cuenta.html?volver=admin.html">Ingresar</a>
+    </section>
+
+    <section class="ad-estado ad-card" id="vSinPermiso" hidden>
+      <h1>Sin acceso al panel</h1>
+      <p>Tu cuenta no tiene permisos de administración. Si trabajas en Befine, pide al administrador que te asigne un rol.</p>
+      <a class="ad-btn ghost" href="index.html">Volver a la tienda</a>
+    </section>
+
+    <!-- Secciones: admin.js las llena según los permisos -->
+    <section class="ad-sec" id="sec-pedidos" hidden></section>
+    <section class="ad-sec" id="sec-catalogo" hidden></section>
+    <section class="ad-sec" id="sec-inventario" hidden></section>
+    <section class="ad-sec" id="sec-cupones" hidden></section>
+    <section class="ad-sec" id="sec-sitio" hidden></section>
+  </main>
+</div>
+
+<!-- Panel lateral (detalle) y modal (formularios) reutilizables -->
+<aside class="ad-drawer" id="adDrawer" aria-hidden="true" tabindex="-1"><div class="ad-drawer-in" id="adDrawerIn"></div></aside>
+<div class="ad-velo" id="adVelo" hidden></div>
+<div class="ad-modal" id="adModal" role="dialog" aria-modal="true" hidden><div class="ad-modal-in" id="adModalIn"></div></div>
+<div class="ad-toast" id="adToast" role="status" aria-live="polite"></div>
+
+<script src="js/local-client.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-logic.js"></script>
+<script src="js/admin-data.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/admin-pedidos.js"></script>
+<script src="js/admin-catalogo.js"></script>
+<script src="js/admin-inventario.js"></script>
+<script src="js/admin-cupones.js"></script>
+<script src="js/admin-sitio.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+/* =====================================================================
+   forms.css — Formularios de nivel e-commerce (checkout y cuenta)
+   Campos grandes y táctiles (≥ 48 px), etiquetas siempre visibles,
+   errores en línea, tarjetas de opción, selector de días y botones
+   sociales. Usa los tokens de marca: se adapta solo a modo día/noche.
+   ===================================================================== */
+
+/* ---------- Tarjeta base (vidrio, igual que el resto del sitio) ---------- */
+.sheet { background: var(--glass-2); backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow); padding: clamp(18px, 3vw, 26px); }
+.sheet + .sheet { margin-top: 16px; }
+.sheet-h { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; }
+.sheet-h .n { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; border-radius: 50%; font-family: var(--font-display);
+  font-weight: 800; font-size: 14px; color: #fff; background: linear-gradient(140deg, var(--accent-soft), var(--accent)); }
+.sheet-h h2 { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -.01em; margin: 0; }
+.sheet-h .aux { margin-left: auto; font-size: 13px; color: var(--muted); }
+.sheet-h .aux a { color: var(--accent-soft); font-weight: 700; }
+body.tema-claro .sheet-h .aux a { color: var(--accent); }
+
+/* ---------- Campos ---------- */
+.fgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+.fgrid > .c6 { grid-column: span 6; } .fgrid > .c4 { grid-column: span 4; } .fgrid > .c3 { grid-column: span 3; } .fgrid > .c2 { grid-column: span 2; }
+@media (max-width: 560px) { .fgrid > .c3, .fgrid > .c4 { grid-column: span 6; } .fgrid > .c2 { grid-column: span 3; } }
+.fld { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fld > label { font-size: 13px; font-weight: 700; color: var(--ink); opacity: .9; }
+.fld > label .opt { font-weight: 500; color: var(--muted); }
+.fld .inp { width: 100%; min-height: 48px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line);
+  background: rgba(4,16,40,.55); color: var(--ink); font: 500 16px/1.3 var(--font-body); /* 16px evita zoom en iPhone */
+  transition: border-color .2s, box-shadow .2s, background .2s; -webkit-appearance: none; appearance: none; }
+.inp::placeholder { color: var(--muted); opacity: .7; }
+.fld .inp:focus { outline: none; border-color: var(--accent-soft); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-soft) 30%, transparent); }
+.fld select.inp { background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 38px; }
+select.inp option { color: #10333f; }
+body.tema-claro .fld .inp { background-color: #fff; border-color: rgba(11,78,122,.22); color: #10333f; }
+body.tema-claro .fld .inp:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(11,127,212,.18); }
+/* Prefijo (+56) y botón dentro del campo */
+.inp-wrap { position: relative; display: flex; align-items: stretch; }
+.inp-wrap .pre { display: grid; place-items: center; padding: 0 12px; border: 1px solid var(--line); border-right: 0; border-radius: 12px 0 0 12px;
+  font-weight: 700; color: var(--muted); background: rgba(255,255,255,.04); white-space: nowrap; }
+.inp-wrap .pre + .inp { border-radius: 0 12px 12px 0; }
+body.tema-claro .inp-wrap .pre { background: #f3f8fc; border-color: rgba(11,78,122,.22); }
+.inp-wrap .eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border: 0; border-radius: 10px;
+  background: none; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
+.inp-wrap .eye svg { width: 20px; height: 20px; }
+.inp-wrap .eye[aria-pressed="true"] { color: var(--accent-soft); }
+.inp-wrap .eye + .inp, .inp-wrap .inp:has(+ .eye) { padding-right: 48px; }
+.hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+/* Error */
+.fld-err { font-size: 12.5px; font-weight: 600; color: #ff8a8a; min-height: 0; }
+.fld.err .inp, .fld.err .pre { border-color: #ff6b6b; }
+body.tema-claro .fld-err { color: #c62828; }
+body.tema-claro .fld.err .inp { border-color: #d64545; box-shadow: 0 0 0 3px rgba(214,69,69,.12); }
+@keyframes shake { 10%, 90% { transform: translateX(-1px); } 30%, 70% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
+.fld.err .inp { animation: shake .35s ease; }
+
+/* ---------- Tarjetas de opción (radio) ---------- */
+.opts2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 480px) { .opts2 { grid-template-columns: 1fr; } }
+.ocard { position: relative; display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 14px; cursor: pointer;
+  border: 1.5px solid var(--line); background: rgba(255,255,255,.03); transition: border-color .2s, background .2s, transform .15s; }
+.ocard:hover { transform: translateY(-1px); }
+.ocard input { position: absolute; opacity: 0; pointer-events: none; }
+.ocard .dot { flex: 0 0 20px; width: 20px; height: 20px; margin-top: 1px; border-radius: 50%; border: 2px solid var(--muted); display: grid; place-items: center; transition: border-color .2s; }
+.ocard .dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); transform: scale(0); transition: transform .2s cubic-bezier(.2,.8,.2,1.4); }
+.ocard b { display: block; font-size: 14.5px; }
+.ocard small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+.ocard:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.ocard:has(input:checked) .dot { border-color: var(--accent); }
+.ocard:has(input:checked) .dot::after { transform: scale(1); }
+.ocard:has(input:focus-visible) { outline: 2px solid var(--accent-soft); outline-offset: 2px; }
+body.tema-claro .ocard { background: #fff; border-color: rgba(11,78,122,.18); }
+body.tema-claro .ocard:has(input:checked) { background: rgba(11,127,212,.06); }
+
+/* ---------- Selector segmentado (Boleta | Factura, pestañas) ---------- */
+.seg2 { display: inline-flex; padding: 4px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.03); gap: 4px; }
+.seg2 button { font: 700 14px var(--font-body); padding: 9px 18px; border-radius: 9px; border: 0; background: none; color: var(--ink); cursor: pointer; transition: background .2s, color .2s; }
+.seg2 button[aria-selected="true"], .seg2 button.on { background: var(--accent); color: #fff; }
+body.tema-claro .seg2 { background: #fff; border-color: rgba(11,78,122,.18); }
+
+/* ---------- Días agendables (carrusel horizontal) ---------- */
+.dias { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.dia { flex: 0 0 auto; scroll-snap-align: start; width: 68px; padding: 10px 6px; border-radius: 12px; text-align: center; cursor: pointer;
+  border: 1.5px solid var(--line); background: rgba(255,255,255,.03); color: var(--ink); font: inherit; transition: border-color .2s, background .2s, transform .15s; }
+.dia:hover { transform: translateY(-1px); }
+.dia .dw { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.dia .dd { display: block; font-family: var(--font-display); font-weight: 800; font-size: 22px; line-height: 1.1; }
+.dia .dm { display: block; font-size: 11px; color: var(--muted); }
+.dia[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+.dia[aria-pressed="true"] .dw, .dia[aria-pressed="true"] .dm { color: rgba(255,255,255,.85); }
+body.tema-claro .dia { background: #fff; border-color: rgba(11,78,122,.18); }
+
+/* ---------- Interruptor (switch) y casilla ---------- */
+.switch { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; user-select: none; }
+.switch input { position: absolute; opacity: 0; }
+.switch .sw { position: relative; flex: 0 0 40px; width: 40px; height: 24px; border-radius: 999px; background: var(--line); transition: background .2s; }
+.switch .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .2s cubic-bezier(.2,.8,.2,1.2); }
+.switch input:checked + .sw { background: var(--accent); }
+.switch input:checked + .sw::after { transform: translateX(16px); }
+.switch input:focus-visible + .sw { outline: 2px solid var(--accent-soft); outline-offset: 2px; }
+body.tema-claro .switch .sw { background: rgba(11,78,122,.25); }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: var(--muted); cursor: pointer; }
+.check input { flex: 0 0 18px; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); }
+.check a { color: var(--accent-soft); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+body.tema-claro .check a { color: var(--accent); }
+
+/* ---------- Botones sociales y divisor ---------- */
+.btn-google { width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 12px; cursor: pointer;
+  font: 700 15px var(--font-body); background: #fff; color: #1f1f1f; border: 1px solid #dadce0; transition: box-shadow .2s, transform .15s; }
+.btn-google:hover { box-shadow: 0 6px 18px -8px rgba(0,0,0,.4); transform: translateY(-1px); }
+.btn-google svg { width: 20px; height: 20px; }
+.divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--muted); font-size: 12.5px; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.btn-lg { min-height: 54px; font-size: 16px; border-radius: 14px; }
+
+/* ---------- Estado "cargando" ---------- */
+.spin { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid currentColor; border-right-color: transparent; animation: girar .7s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+.btn.is-loading { cursor: progress; opacity: .92; }
+
+/* ---------- Avisos ---------- */
+.aviso { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; font-size: 13.5px; line-height: 1.45;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+.aviso.ok { background: rgba(70,185,138,.14); border-color: rgba(70,185,138,.45); }
+.aviso.mal { background: rgba(255,107,107,.12); border-color: rgba(255,107,107,.45); }
+.aviso svg { flex: 0 0 18px; width: 18px; height: 18px; margin-top: 1px; }
+
+/* ---------- Check animado (pedido confirmado / cuenta creada) ---------- */
+.okmark { width: 76px; height: 76px; display: block; margin: 0 auto 14px; }
+.okmark circle { fill: none; stroke: var(--mint); stroke-width: 3; stroke-dasharray: 166; stroke-dashoffset: 166; animation: trazo .6s .1s cubic-bezier(.65,0,.45,1) forwards; }
+.okmark path { fill: none; stroke: var(--mint); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 48; stroke-dashoffset: 48; animation: trazo .35s .6s cubic-bezier(.65,0,.45,1) forwards; }
+@keyframes trazo { to { stroke-dashoffset: 0; } }
+
+/* Aparición suave de secciones que se despliegan */
+.despliega { animation: desp .32s cubic-bezier(.2,.8,.2,1); }
+@keyframes desp { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .okmark circle, .okmark path { animation: none; stroke-dashoffset: 0; } }

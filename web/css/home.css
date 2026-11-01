@@ -1,0 +1,240 @@
+/* =====================================================================
+   home.css — Home fiel al demo de Carlos (recoloreada a la paleta Befine)
+   Incluye: intro/loader, burbujas de fondo, cursor custom, hero, carrusel
+   de destacados con brillo, y el catálogo "cine" flotante (tira que sube
+   con las cards flotando en 3D). Colores por --tokens (bands.js los cambia
+   según la hora).
+   ===================================================================== */
+
+/* ---------- PROFUNDIDAD: oscurecimiento al descender ("hundirse") ----------
+   Cubre toda la pantalla, sobre el agua pero DEBAJO del contenido (cards
+   siguen legibles). Su opacidad la sube js/home.js según el scroll. */
+.depth {
+  position: fixed; inset: 0; z-index: var(--z-veil); pointer-events: none;
+  background: linear-gradient(180deg, rgba(3,16,40,.15), rgba(1,7,20,.98));
+  opacity: 0; /* 0 en la superficie → sube al bajar (lo controla home.js) */
+}
+
+/* ---------- Burbujas de fondo ---------- */
+.bubbles { position: fixed; inset: 0; z-index: var(--z-veil); pointer-events: none; overflow: hidden; }
+.bubbles i {
+  position: absolute; bottom: -8vh; border-radius: 50%; opacity: 0; animation: rise linear infinite;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(224,236,255,.08) 60%, transparent 70%);
+}
+@keyframes rise {
+  0% { transform: translateY(0) scale(.9); opacity: 0; }
+  10% { opacity: .5; } 90% { opacity: .35; }
+  100% { transform: translateY(-118vh) scale(1.1); opacity: 0; }
+}
+
+/* ---------- Cursor personalizado ---------- */
+.cur-dot, .cur-ring { position: fixed; top: 0; left: 0; z-index: var(--z-cursor); pointer-events: none; border-radius: 50%; transform: translate(-50%,-50%); mix-blend-mode: screen; }
+.cur-dot { width: 7px; height: 7px; background: var(--accent-soft); }
+.cur-ring { width: 34px; height: 34px; border: 1.5px solid var(--accent-soft); opacity: .7; transition: width .18s ease, height .18s ease, opacity .18s ease, background .18s ease; }
+.cur-ring.big { width: 58px; height: 58px; opacity: 1; background: rgba(142,197,255,.12); }
+@media (hover:none),(pointer:coarse) { .cur-dot, .cur-ring { display: none; } }
+
+/* ---------- Intro / loader ---------- */
+/* Velo translúcido (no tapa todo): se ve la página detrás; logo y mensaje van encima. Dura ≤ 1 s. */
+.loader { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; text-align: center; padding: 24px; background: rgba(6,24,56,.5); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); transition: opacity .3s ease, visibility .3s ease; }
+.loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-inner { max-width: 640px; }
+.loader .l-logo { width: clamp(150px,26vw,210px); height: auto; margin: 0 auto 22px; display: block; filter: drop-shadow(0 12px 34px rgba(0,0,0,.5)); opacity: 0; transform: translateY(12px); animation: up .35s 0s forwards; }
+.loader h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: -.03em; font-size: clamp(40px,9vw,84px); line-height: .98; margin: 0; text-wrap: balance; text-shadow: 0 12px 44px rgba(0,0,0,.45); opacity: 0; transform: translateY(16px); animation: up .35s .05s forwards; }
+.loader h1 .accent { color: var(--accent-soft); }
+.loader p.msg { margin: 16px auto 0; font-size: clamp(16px,2.6vw,21px); color: var(--ink); opacity: 0; transform: translateY(12px); max-width: 32ch; text-shadow: 0 4px 18px rgba(0,0,0,.45); animation: up .35s .1s forwards; }
+.loader .bar { margin: 34px auto 0; width: 180px; height: 4px; border-radius: 999px; background: rgba(255,255,255,.16); overflow: hidden; }
+.loader .bar span { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg,var(--accent-soft),var(--accent)); animation: load .7s ease forwards; }
+@keyframes load { to { width: 100%; } }
+@keyframes up { to { opacity: 1; transform: none; } }
+
+/* ---------- Hero ---------- */
+.hero { padding: clamp(44px,10vw,96px) 0 clamp(28px,5vw,44px); }
+.hero .eyebrow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent-soft); font-weight: 700; margin: 0 0 14px; }
+.hero h1 { font-family: "Playfair Display", serif; font-weight: 800; letter-spacing: -.02em; font-size: clamp(36px,7.4vw,68px); line-height: 1.05; margin: 0; max-width: 15ch; text-shadow: 0 10px 40px rgba(0,0,0,.4); }
+.hero h1 .serif { font-family: var(--font-serif); font-weight: 500; font-style: italic; letter-spacing: -.01em;
+  background: linear-gradient(90deg,var(--accent-soft),#fff,var(--accent-soft)); background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 6s linear infinite; }
+@keyframes shimmer { 0% { background-position: 0 0; } 100% { background-position: 220% 0; } }
+.hero p.sub { margin: 18px 0 0; font-size: clamp(16px,2.3vw,20px); color: var(--ink); opacity: .92; max-width: 46ch; }
+/* Frase secundaria pequeña (el "mueve el mouse"): discreta, no protagonista */
+.hero .hint { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); opacity: .7; }
+.hero .trust { margin-top: 22px; display: flex; gap: 18px; flex-wrap: wrap; color: var(--muted); font-size: 13px; }
+.hero .trust b { color: var(--accent-soft); }
+
+
+/* ---------- Banner del hero (imagen que sube el administrador) ----------
+   Va detrás del texto y de la tarjeta de pedido. El "velo" oscurece la foto (--osc, 0 a .8) para que el texto
+   siempre se lea; con banner, el texto del hero pasa a colores claros aunque la página esté en tema claro. */
+.hero { position: relative; }
+.hero-banner { position: absolute; inset: 0; z-index: -1; border-radius: clamp(18px,3vw,30px); overflow: hidden; background: #0b2a44; box-shadow: 0 30px 70px -40px rgba(3,16,40,.7); }
+.hero-banner[hidden] { display: none; }
+.hero-banner picture, .hero-banner img { display: block; width: 100%; height: 100%; }
+.hero-banner img { object-fit: cover; }
+.hero-banner .velo { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(3,14,32,var(--osc,.45)) 0%, rgba(3,14,32,calc(var(--osc,.45) * .55)) 100%); }
+.hero.con-banner { isolation: isolate; padding-left: clamp(16px,3.5vw,44px); padding-right: clamp(16px,3.5vw,44px); }
+.hero.con-banner .inner { --ink: #fff; --muted: rgba(255,255,255,.82); --accent-soft: #bfe3ff; color: #fff; }
+.hero.con-banner h1 { color: #fff; }
+body.tema-claro .hero.con-banner h1 .serif { background-image: linear-gradient(90deg, #bfe3ff, #fff, #bfe3ff); }
+body.tema-claro .hero.con-banner .hint { color: rgba(255,255,255,.8); }
+
+/* Cuando la animación está apagada: se ocultan agua, burbujas y cursor custom */
+body.fx-off #water, body.fx-off .bubbles { opacity: 0; transition: opacity .4s ease; }
+body.fx-off .cur-dot, body.fx-off .cur-ring { display: none; }
+
+/* Rejilla del hero: mensaje + tarjeta de pedido rápido */
+.hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 32px; align-items: center; }
+@media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; gap: 26px; } .hero-grid .qorder { order: -1; } }
+
+/* Tarjeta de PEDIDO RÁPIDO (Recarga protagonista) */
+.qorder { background: var(--glass-2); backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 22px; }
+.qorder .badge { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #3a1f00; background: linear-gradient(180deg,#FFCE5C,#F2A63C); padding: 6px 12px; border-radius: 999px; margin-bottom: 14px; }
+.qorder .media { height: 150px; border-radius: var(--radius); position: relative; overflow: hidden; margin-bottom: 14px; }
+.qorder .media::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 80% at 30% 12%,rgba(255,255,255,.28),transparent 55%),var(--v-grad); }
+.qorder h3 { font-family: var(--font-display); font-weight: 800; font-size: 20px; margin: 0 0 6px; letter-spacing: -.01em; }
+.qorder .price { margin-bottom: 6px; }
+.qorder .price .now { font-family: var(--font-display); font-weight: 800; font-size: 26px; color: var(--accent-soft); }
+.qorder .price s { color: var(--celeste); opacity: .65; font-size: .62em; margin-left: 6px; }
+/* Aviso destacado: aceptamos envases de otras marcas
+   Una sola línea, mayúsculas. Día: celeste. Noche: azul nocturno.
+   Bordes luminosos, sin sombra/halo exterior. */
+.qorder .aviso-recarga { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0 4px;
+  padding: 9px 12px; border-radius: 10px; color: #fff; font-weight: 700; line-height: 1;
+  font-size: clamp(10.5px, 3vw, 12.5px); letter-spacing: .05em; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  background: linear-gradient(90deg, #1BA3E0, #0B7FD4); border: 1px solid rgba(255,255,255,.55); }
+.qorder .aviso-recarga .ico { display: grid; place-items: center; flex: 0 0 20px; width: 20px; height: 20px; border-radius: 50%;
+  background: #fff; color: #0B7FD4; font-size: 12px; font-weight: 800; letter-spacing: 0; }
+/* Modo noche: azul nocturno con borde celeste luminoso */
+.qorder .aviso-recarga .ico svg { width: 14px; height: 14px; display: block; }
+body:not(.tema-claro) .qorder .aviso-recarga { background: linear-gradient(90deg, #15609E, #0B3563); border-color: rgba(142,197,255,.7); }
+body:not(.tema-claro) .qorder .aviso-recarga .ico { background: #8EC5FF; color: #0B3563; }
+@media (max-width: 360px) { .qorder .aviso-recarga { letter-spacing: .02em; padding: 8px 10px; gap: 6px; } }
+.qorder .lbl { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; margin: 12px 0 8px; }
+.qorder .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.qorder .opt { font: inherit; font-size: 13px; cursor: pointer; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--ink); transition: border-color .2s, background .2s; }
+.qorder .opt.active { border-color: var(--accent); background: rgba(42,130,230,.16); color: var(--accent-soft); }
+.qorder .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.qorder .actions .btn { width: 100%; }
+.qorder .verdet { display: block; text-align: center; margin-top: 12px; color: var(--accent-soft); font-weight: 600; font-size: 14px; }
+.qorder .verdet:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 380px) { .qorder .actions { grid-template-columns: 1fr; } }
+
+/* ---------- Carrusel de destacados (con brillo/sheen) ---------- */
+.track { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x proximity; padding: 4px 4px 20px; margin: 0 -4px; cursor: grab; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.track.grabbing { cursor: grabbing; scroll-snap-type: none; }
+.track::-webkit-scrollbar { height: 8px; } .track::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+.track .card { scroll-snap-align: start; flex: 0 0 min(78%,260px); position: relative; }
+.track .card::after { content: ""; position: absolute; top: 0; left: -60%; width: 45%; height: 100%; pointer-events: none;
+  background: linear-gradient(100deg,transparent,rgba(255,255,255,.16),transparent); transform: skewX(-14deg); }
+.track .card:hover::after { animation: sheen .8s ease; }
+@keyframes sheen { from { left: -60%; } to { left: 130%; } }
+/* Parallax de la "vasija" del producto al hacer scroll del carrusel */
+.track .card .vessel::before { transform: translateY(var(--pv,0)); transition: transform .1s linear; }
+/* Cards flotando en el carrusel (desfasadas para que no floten iguales) */
+.track .card { animation: floatCard 5.5s ease-in-out infinite; }
+.track .card:nth-child(2n) { animation-delay: -1.6s; }
+.track .card:nth-child(3n) { animation-delay: -3.1s; }
+@keyframes floatCard { 0%,100% { transform: translateY(-7px); } 50% { transform: translateY(7px); } }
+@media (prefers-reduced-motion: reduce) { .track .card { animation: none; } }
+
+
+/* ---------- Botón de sonido ---------- */
+.sound-btn { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom,0px)); z-index: 40; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: rgba(10,40,92,.6); backdrop-filter: blur(8px); color: var(--accent-soft); display: grid; place-items: center; cursor: pointer; transition: transform .15s ease; }
+.sound-btn:hover { transform: translateY(-2px); }
+.sound-btn svg { width: 20px; height: 20px; }
+
+/* ---------- Previsualizar horario (demo) ---------- */
+/* (Estilos de .demo-bands / .seg movidos a shell.css para compartirse en todas las páginas) */
+
+/* ---------- Reseñas (prueba social) ---------- */
+.reviews { padding-block: clamp(28px,5vw,52px); }
+
+/* Resumen: promedio + estrellas + total + fuente (Google) */
+.rev-summary { display: flex; align-items: center; gap: clamp(16px,3vw,28px); flex-wrap: wrap;
+  background: var(--glass-2); backdrop-filter: blur(12px); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 18px clamp(18px,3vw,26px); margin-bottom: 22px; }
+.rev-summary .avg { font-family: var(--font-display); font-weight: 800; font-size: clamp(38px,6vw,52px);
+  line-height: 1; color: var(--accent-soft); letter-spacing: -.02em; }
+.rev-summary .avg-side { display: flex; flex-direction: column; gap: 4px; }
+.rev-summary .count { font-size: 13px; color: var(--muted); }
+
+.rev-summary .rev-actions { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 560px) { .rev-summary .rev-actions { margin-left: 0; width: 100%; } .rev-summary .rev-actions .btn { flex: 1; white-space: nowrap; font-size: 13px; padding-inline: 10px; } }
+
+/* Estrellas (relleno ámbar sobre base tenue) */
+.stars { --fill: 100%; position: relative; display: inline-block; font-size: 16px; line-height: 1; letter-spacing: 2px;
+  font-family: Arial, sans-serif; white-space: nowrap; }
+.stars::before { content: "★★★★★"; color: rgba(255,255,255,.18); }
+.stars::after { content: "★★★★★"; color: var(--amber); position: absolute; inset: 0; width: var(--fill); overflow: hidden; }
+
+/* Carrusel de reseñas: 3 visibles en PC, 2 en tablet, 1 en celular */
+.rev-carousel { position: relative; }
+.rev-track { position: relative; display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; padding: 6px 2px 10px; -webkit-overflow-scrolling: touch; }
+.rev-track::-webkit-scrollbar { display: none; }
+.rev-track .rev-card { flex: 0 0 calc((100% - 32px) / 3); scroll-snap-align: start; min-width: 0; }
+@media (max-width: 960px) { .rev-track .rev-card { flex-basis: calc((100% - 16px) / 2); } }
+@media (max-width: 640px) { .rev-track .rev-card { flex-basis: 100%; } }
+/* Flechas */
+.rev-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 24px; line-height: 1; cursor: pointer; color: var(--accent-soft);
+  background: var(--glass-2); backdrop-filter: blur(10px); border: 1px solid var(--line); box-shadow: var(--shadow);
+  transition: border-color .2s, transform .2s; }
+.rev-nav:hover { border-color: var(--accent); transform: translateY(-50%) scale(1.06); }
+.rev-nav.prev { left: -20px; } .rev-nav.next { right: -20px; }
+.rev-carousel.static .rev-nav { display: none; }
+@media (max-width: 1180px) { .rev-nav.prev { left: 6px; } .rev-nav.next { right: 6px; } }
+@media (max-width: 640px) { .rev-nav { display: none; } } /* en celular: deslizar + puntos + rotación automática */
+/* Puntos */
+.rev-dots { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+.rev-dots button { width: 8px; height: 8px; padding: 0; border: none; border-radius: 999px; cursor: pointer;
+  background: var(--line); transition: width .25s ease, background .25s ease; }
+.rev-dots button.on { width: 22px; background: var(--accent); }
+body.tema-claro .rev-dots button:not(.on) { background: rgba(11,78,122,.25); }
+
+/* Grilla de tarjetas de reseña */
+.rev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; }
+.rev-card { color: inherit; text-decoration: none; cursor: pointer; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; display: flex; flex-direction: column; gap: 12px;
+  position: relative; overflow: hidden; transition: transform .25s ease, border-color .25s ease; }
+.rev-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+.rev-card::after { content: ""; position: absolute; top: 0; left: -60%; width: 45%; height: 100%; pointer-events: none;
+  background: linear-gradient(100deg,transparent,rgba(255,255,255,.12),transparent); transform: skewX(-14deg); }
+.rev-card:hover::after { animation: sheen .8s ease; }
+.rev-card .quote { color: var(--ink); font-size: 14.5px; line-height: 1.55; opacity: .95; margin: 0; flex: 1; }
+.rev-card .who { display: flex; align-items: center; gap: 12px; }
+.rev-card .avatar { object-fit: cover; width: 40px; height: 40px; border-radius: 50%; flex: 0 0 40px; display: grid; place-items: center;
+  font-family: var(--font-display); font-weight: 800; font-size: 16px; color: var(--on-accent);
+  background: linear-gradient(140deg,var(--accent-soft),var(--accent)); }
+.rev-card .name { font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--ink); }
+.rev-card .date { font-size: 12px; color: var(--muted); }
+.rev-card:focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 3px; }
+.rev-card .quote { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Modo claro: texto legible sobre fondo blanco/azul */
+body.tema-claro .rev-card { color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rev-card:hover { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubbles, .cur-dot, .cur-ring { display: none; }
+}
+
+/* PC: la tarjeta de compra rápida sube y se compacta para verse completa sin hacer scroll */
+@media (min-width: 861px) {
+  .hero { padding-top: clamp(20px, 3vw, 40px); }
+  .hero-grid { align-items: start; }
+  .hero-grid .inner { padding-top: clamp(12px, 3vh, 40px); }
+  .qorder { padding: 18px 20px; }
+  .qorder .badge { margin-bottom: 10px; padding: 5px 11px; font-size: 11px; }
+  .qorder .media { height: clamp(70px, 11vh, 110px); margin-bottom: 12px; }
+  .qorder h3 { font-size: 19px; margin-bottom: 4px; }
+  .qorder .price .now { font-size: 24px; }
+  .qorder .lbl { margin: 10px 0 6px; }
+  .qorder .opt { padding: 8px 12px; }
+  .qorder .actions { margin-top: 12px; }
+  .qorder .verdet { margin-top: 10px; }
+}

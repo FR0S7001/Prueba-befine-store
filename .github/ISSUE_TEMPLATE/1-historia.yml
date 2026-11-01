@@ -1,0 +1,38 @@
+name: Historia de usuario
+description: Nueva historia del backlog (HU-XX)
+title: "HU-XX · "
+labels: ["tipo:historia"]
+body:
+  - type: textarea
+    id: historia
+    attributes:
+      label: Historia
+      description: Como <rol>, quiero <acción>, para <beneficio>.
+      placeholder: Como cliente, quiero ..., para ...
+    validations:
+      required: true
+  - type: input
+    id: requerimientos
+    attributes:
+      label: Requerimientos y EDT
+      placeholder: "RF-05 · EDT 3.3"
+  - type: dropdown
+    id: prioridad
+    attributes:
+      label: Prioridad
+      options:
+        - "P1 · bloqueante MVP"
+        - "P2 · MVP core"
+        - "P3 · valor agregado"
+    validations:
+      required: true
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      value: |
+        - [ ]
+        - [ ]
+        - [ ] Probado en modo día y noche, celular y PC
+    validations:
+      required: true
