@@ -19,7 +19,7 @@ python -m http.server 5500
 # abre http://localhost:5500
 ```
 
----
+----
 
 ## 2. Estructura de carpetas
 
